@@ -1,14 +1,13 @@
 OBJS=main.o\
-	test.o
+	config.o
 TARGET=tjvm
-
-VPATH=./src
+LIBS= -lboost_program_options
 
 $(TARGET):$(OBJS)
-	g++ $(OBJS) -o $(TARGET)
+	g++ $(OBJS) -o $(TARGET) $(LIBS)
 *.o:
-	g++ -o $? -c
 
+.PHONY:clean
 clean:
 	rm -rf *.o
 	rm -rf $(TARGET)
