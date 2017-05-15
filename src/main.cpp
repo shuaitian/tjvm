@@ -2,7 +2,9 @@
 #include <boost/smart_ptr.hpp>
 #include <boost/exception/all.hpp>
 #include <string>
+#include <vector>
 #include "config.h"
+#include "ziputil.h"
 using namespace std;
 using namespace boost;
 
@@ -37,7 +39,19 @@ int main(int argc,char* argv[]){
 }
 
 void start(){
+	ZipUtil zip("my.zip");
+	//vector<string> fileNames = zip.getFileNames();
+	const char* filename = "hello.txt";
+	cout << "extract file :" << filename << endl;
+	shared_ptr<ByteArray> byteArray = zip.extractFileByName(filename);
+	cout << "byteArray size:" << byteArray->getCurrentSize() << endl; 
+//	cout << "byteArray content:" << byteArray->getData() << endl;
+	for(unsigned long i=0; i<byteArray->getCurrentSize(); i++){
+		if((*byteArray)[i] == ' ') continue;
+		cout << (*byteArray)[i];
+	}
 
+	cout << endl;
 }
 
 void printConfig(){
