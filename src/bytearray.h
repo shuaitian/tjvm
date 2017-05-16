@@ -16,6 +16,7 @@ public:
 		return len;
 	}
 	unsigned char operator[](unsigned long index);
+	void display();
 	~ByteArray();
 
 };

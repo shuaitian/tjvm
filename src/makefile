@@ -13,7 +13,7 @@ TARGET  := tjvm
 #compile and lib parameter
 #编译参数
 CC      := g++
-LIBS    := -L../lib -lboost_program_options -lminizip
+LIBS    := -L../lib -lboost_program_options -lminizip -lboost_system -lboost_filesystem
 LDFLAGS :=
 DEFINES :=
 INCLUDE := -I../include

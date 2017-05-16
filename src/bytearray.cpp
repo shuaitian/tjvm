@@ -54,3 +54,13 @@ unsigned char ByteArray::operator[](unsigned long index){
 ByteArray::~ByteArray(){
 	delete[] data;
 }
+
+void ByteArray::display(){
+	printf("byte data:");
+	for(unsigned long i=0; i<len; i++){
+		if((i % 8) == 0)
+			printf("\n");
+		printf("%x\t",data[i]);
+	}
+	printf("\n");
+}

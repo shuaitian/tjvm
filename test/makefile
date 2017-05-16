@@ -3,7 +3,7 @@
 ######################################
 #source file
 #源文件，自动找所有.c和.cpp文件，并将目标定义为同名.o文件
-SOURCE  := minizip-test.cpp
+SOURCE  := filesystem-test.cpp
 OBJS    := $(patsubst %.c,%.o,$(patsubst %.cpp,%.o,$(SOURCE)))
   
 #target you can change test to what you want
@@ -13,7 +13,7 @@ TARGET  := test
 #compile and lib parameter
 #编译参数
 CC      := g++
-LIBS    := -L../lib -lz -lminizip
+LIBS    := -L../lib -lz -lminizip -lboost_filesystem -lboost_system
 LDFLAGS :=
 DEFINES :=
 INCLUDE := -I../include -I.

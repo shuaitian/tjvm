@@ -24,10 +24,10 @@ Config::Config(char** argv,int argc):
 		jrePath = ".";
 	}
 	opts.add_options()
-		("help,h","help info")
-		("version,v","version")
-		("classpath,p",value<string>()->default_value("."),"class path")
-		("Xjre",value<string>()->default_value(jrePath),"jre home")
+		("help","help info")
+		("versionv","version")
+		("classpath",value<string>()->default_value("."),"class path")
+		("jre",value<string>()->default_value(jrePath),"jre home")
 		("mainClass",value<string>(),"main class")
 	;
 	positional_options_description pod;

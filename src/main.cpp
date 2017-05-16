@@ -5,6 +5,7 @@
 #include <vector>
 #include "config.h"
 #include "ziputil.h"
+#include "classfilereader.h"
 using namespace std;
 using namespace boost;
 
@@ -39,19 +40,28 @@ int main(int argc,char* argv[]){
 }
 
 void start(){
-	ZipUtil zip("my.zip");
-	//vector<string> fileNames = zip.getFileNames();
-	const char* filename = "hello.txt";
-	cout << "extract file :" << filename << endl;
-	shared_ptr<ByteArray> byteArray = zip.extractFileByName(filename);
-	cout << "byteArray size:" << byteArray->getCurrentSize() << endl; 
+//	ZipUtil zip("my.zip");
+//	//vector<string> fileNames = zip.getFileNames();
+//	const char* filename = "hello.txt";
+//	cout << "extract file :" << filename << endl;
+//	shared_ptr<ByteArray> byteArray = zip.extractFileByName(filename);
+//	cout << "byteArray size:" << byteArray->getCurrentSize() << endl; 
 //	cout << "byteArray content:" << byteArray->getData() << endl;
-	for(unsigned long i=0; i<byteArray->getCurrentSize(); i++){
-		if((*byteArray)[i] == ' ') continue;
-		cout << (*byteArray)[i];
-	}
+//	for(unsigned long i=0; i<byteArray->getCurrentSize(); i++){
+//		if((*byteArray)[i] == ' ') continue;
+//		cout << (*byteArray)[i];
+//	}
 
-	cout << endl;
+	shared_ptr<ClassFileReader> classFileReader = ClassFileReader::instance();
+	shared_ptr<ByteArray> classFile = classFileReader->readClassFile("java.lang.String");
+	//cout << endl;
+	if(classFile){
+		cout << "Class File Size:" << classFile->getCurrentSize() << endl;
+//		classFile->display();
+	}
+	else{
+		cout << "not found" << endl;
+	}
 }
 
 void printConfig(){
