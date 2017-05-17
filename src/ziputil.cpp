@@ -81,9 +81,9 @@ shared_ptr<ByteArray> ZipUtil::extractFileByName(string_ref filename){
     }
 
 	{
-		const char* write_filename;
-		write_filename = filename_withoutpath;
-		fout=fopen(write_filename,"wb");
+//		const char* write_filename;
+//		write_filename = filename_withoutpath;
+//		fout=fopen(write_filename,"wb");
 
 		err = unzOpenCurrentFilePassword(uf,NULL);
 		if(UNZ_OK != err){

@@ -45,17 +45,21 @@ shared_ptr<ByteArray> ClassFileReader::readClassFile(string_ref classFileName){
 	if(!found){
 		//find in bootstrap class path
 		jrePath /= "lib";
-		ret = travelDirectory(ucfn,jrePath);
-		if(ret)
-			found = true;
+		if(exists(jrePath)){
+			ret = travelDirectory(ucfn,jrePath);
+			if(ret)
+				found = true;
+		}
 	}
 
 	if(!found){
 		//find in extension classpath
 		jrePath /= "ext";
-		ret = travelDirectory(ucfn,jrePath);
-		if(ret)
-			found = true;
+		if(exists(jrePath)){
+			ret = travelDirectory(ucfn,jrePath);
+			if(ret)
+				found = true;
+		}
 	}
 
 	if(!found){
@@ -63,7 +67,8 @@ shared_ptr<ByteArray> ClassFileReader::readClassFile(string_ref classFileName){
 		string filePath = classpath + "/" + cfnString;
 	    ret = readFileFromExsitPath(filePath);
 		if(!ret){
-			ret = travelDirectory(ucfn,classpath);
+			if(exists(classpath))
+				ret = travelDirectory(ucfn,classpath);
 		}
 		if(ret)
 			found = true;

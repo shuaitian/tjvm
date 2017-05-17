@@ -51,9 +51,9 @@ void start(){
 //		if((*byteArray)[i] == ' ') continue;
 //		cout << (*byteArray)[i];
 //	}
-
+	shared_ptr<Config> config = Config::instance();
 	shared_ptr<ClassFileReader> classFileReader = ClassFileReader::instance();
-	shared_ptr<ByteArray> classFile = classFileReader->readClassFile("java.lang.String");
+	shared_ptr<ByteArray> classFile = classFileReader->readClassFile(config->get("mainClass"));
 	//cout << endl;
 	if(classFile){
 		cout << "Class File Size:" << classFile->getCurrentSize() << endl;
