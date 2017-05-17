@@ -1,2 +1,2 @@
 # tjvm
-a simple jvm for learning JVM principle
+a simple jvm using c++,for learning how jvm works
