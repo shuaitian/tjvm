@@ -27,7 +27,7 @@ void ByteArray::append(void* buf,int size){
 			exit(-1);
 			//TODO throw exception
 		}
-		total *= 2;
+		total *= 1.5;
 		memcpy(p,data,len);
 		delete[] data;
 		data = p;

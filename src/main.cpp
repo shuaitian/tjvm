@@ -3,9 +3,13 @@
 #include <boost/exception/all.hpp>
 #include <string>
 #include <vector>
+#include <stdio.h>
 #include "config.h"
 #include "ziputil.h"
 #include "classfilereader.h"
+#include "classreader.h"
+#include "classentity.h"
+#include "classparser.h"
 using namespace std;
 using namespace boost;
 
@@ -58,6 +62,13 @@ void start(){
 	if(classFile){
 		cout << "Class File Size:" << classFile->getCurrentSize() << endl;
 //		classFile->display();
+//		ClassReader classReader(classFile);		
+//		printf("%x",classReader.readU1());
+//		printf(" %x\n",classReader.readU1());
+		shared_ptr<ClassEntity> classEntity = ClassParser::instance()->parser(classFile);
+		printf("magic:%x\n",classEntity->getMagic());
+		printf("minor version:%d,major version:%d\n",classEntity->getMinorVersion(),classEntity->getMajorVersion());
+		printf("constant pool size:%d\n",(classEntity->getConstantPool())->getSize());
 	}
 	else{
 		cout << "not found" << endl;
