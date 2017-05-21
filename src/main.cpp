@@ -69,6 +69,11 @@ void start(){
 		printf("magic:%x\n",classEntity->getMagic());
 		printf("minor version:%d,major version:%d\n",classEntity->getMinorVersion(),classEntity->getMajorVersion());
 		printf("constant pool size:%d\n",(classEntity->getConstantPool())->getSize());
+		(classEntity->getConstantPool())->display();
+		printf("this class:#%u\n",classEntity->getThisClass());
+		printf("super class:#%u\n",classEntity->getSuperClass());
+		(classEntity->getFieldMember())->display("field");
+		(classEntity->getMethodMember())->display("method");
 	}
 	else{
 		cout << "not found" << endl;

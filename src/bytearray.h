@@ -1,6 +1,8 @@
 #ifndef _BYTEARRAY_H_
 #define _BYTEARRAY_H_
-
+#include <boost/smart_ptr.hpp>
+class ByteArray;
+typedef boost::shared_ptr<ByteArray> ByteArrayPtr;
 class ByteArray{
 private:
 	unsigned long len;

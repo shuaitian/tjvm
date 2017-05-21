@@ -14,6 +14,7 @@ public:
 	int getSize(){
 		return pool.size();
 	}
+	void display();
 };
 
 #endif

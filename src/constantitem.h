@@ -3,6 +3,7 @@
 #include "def.h"
 #include "bytearray.h"
 #include <boost/smart_ptr.hpp>
+#include <string.h>
 #include <string>
 using namespace std;
 using namespace boost;
@@ -19,14 +20,14 @@ const u1 CONSTANT_Double				= 6;
 const u1 CONSTANT_NameAndType			= 12;
 const u1 CONSTANT_Utf8					= 1;
 const u1 CONSTANT_MethodHandle			= 15;
-const u1 CONSTANT_MethoeType			= 16;
+const u1 CONSTANT_MethodType			= 16;
 const u1 CONSTANT_InvokeDynamic			= 18;
 
 
 class ConstantItem{
 private:
 	u1 tag;
-	
+	u2 ownIndex;	
 public:
 	void setTag(u1 tag){
 		this->tag = tag;
@@ -34,10 +35,16 @@ public:
 	u1 getTag(){
 		return this->tag;
 	}
+	void setOwnIndex(u2 index){
+		this->ownIndex = index;
+	}
+	u2 getOwnIndex(){
+		return this->ownIndex;
+	}
 };
 
 class ConstantU4Item : public ConstantItem{
-private:
+protected:
 	u4 bytes;
 public:
 	void setBytes(u4 bytes){
@@ -48,12 +55,24 @@ public:
 	}
 };
 
-class ConstantIntegerItem : public ConstantU4Item{};
+class ConstantIntegerItem : public ConstantU4Item{
+public:
+	int32_t getInt32Local(){
+		return static_cast<int32_t>(bytes);
+	}
+};
 
-class ConstantFloatItem : public ConstantU4Item{};
+class ConstantFloatItem : public ConstantU4Item{
+public:
+	float getFloatLocal(){
+		float ret;
+		memcpy(&ret,&bytes,sizeof(bytes));
+		return ret;
+	}
+};
 
 class ConstantU8Item : public ConstantItem{
-private:
+protected:
 	u8 bytes;
 public:
 	void setBytes(u8 bytes){
@@ -64,9 +83,21 @@ public:
 	}
 };
 
-class ConstantLongItem : public ConstantU8Item{};
+class ConstantLongItem : public ConstantU8Item{
+public:
+	int64_t getLong64Local(){
+		return static_cast<int64_t>(bytes);
+	}
+};
 
-class ConstantDoubleItem : public ConstantU8Item{};
+class ConstantDoubleItem : public ConstantU8Item{
+public:
+	double getDoubleLocal(){
+		double ret;
+		memcpy(&ret,&bytes,sizeof(bytes));
+		return ret;
+	}
+};
 
 
 class ConstantUTF8Item : public ConstantItem{
@@ -101,28 +132,37 @@ public:
 
 class ConstantStringItem : public ConstantItem{
 private:
-	u2 index;
+	u2 stringIndex;
 public:
-	void setIndex(u2 index){
-		this->index = index;
+	void setStringIndex(u2 index){
+		this->stringIndex = index;
 	}
-	u2 getIndex(){
-		return this->index;
+	u2 getStringIndex(){
+		return this->stringIndex;
+	}
+
+	uint32_t getStringIndexLocal(){
+		return this->stringIndex;
 	}
 
 };
 
 class ConstantClassItem : public ConstantItem{
 private:	
-	u2 index;
+	u2 nameIndex;
 public:
-	void setIndex(u2 index){
-		this->index = index;
+	void setNameIndex(u2 index){
+		this->nameIndex = index;
 	}
 
-	u2 getIndex(){
-		return this->index;
+	u2 getNameIndex(){
+		return this->nameIndex;
 	}
+
+	uint16_t getNameIndexLocal(){
+		return this->nameIndex;
+	}
+	
 };
 
 class ConstantNameAndTypeItem : public ConstantItem{
@@ -143,6 +183,14 @@ public:
 	u2 getDescriptorIndex(){
 		return this->descriptorIndex;
 	}
+
+	uint32_t getNameIndexLocal(){
+		return this->nameIndex;
+	}
+
+	uint32_t getDescriptorIndexLocal(){
+		return this->descriptorIndex;
+	}
 };
 
 class ConstantMemberItem : public ConstantItem{
@@ -161,6 +209,14 @@ public:
 	}
 	u2 getNameAndTypeIndex(){
 		return this->nameAndTypeIndex;
+	}
+
+	uint32_t getClassIndexLocal(){
+		return classIndex;
+	}
+
+	uint32_t getNameAndTypeIndexLocal(){
+		return nameAndTypeIndex;
 	}
 };
 

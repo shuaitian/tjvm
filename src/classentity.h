@@ -2,6 +2,7 @@
 #define _CLASSENTITY_H_
 #include "def.h"
 #include "constantpool.h"
+#include "member.h"
 #include <vector>
 #include <boost/smart_ptr.hpp>
 using namespace std;
@@ -14,7 +15,9 @@ private:
 	u2 accessFlags;
 	u2 thisClass;
 	u2 superClass;
-	vector<u2> interfaces;
+	shared_ptr<vector<u2> > interfaces;
+	MemberPtr fieldMember;
+	MemberPtr methodMember;
 public:
 	u4 getMagic(){
 		return magic;
@@ -37,8 +40,14 @@ public:
 	u2 getSuperClass(){
 		return superClass;
 	}
-	vector<u2>& getInterfaces(){
+	shared_ptr<vector<u2> > getInterfaces(){
 		return interfaces;
+	}
+	MemberPtr getFieldMember(){
+		return fieldMember;
+	}
+	MemberPtr getMethodMember(){
+		return methodMember;
 	}
 	void setMagic(u4 magic){
 		this->magic = magic;
@@ -61,8 +70,14 @@ public:
 	void setSuperClass(u2 superClass){
 		this->superClass = superClass;
 	}
-	void setInterfaces(vector<u2> interfaces){
+	void setInterfaces(shared_ptr<vector<u2> > interfaces){
 		this->interfaces = interfaces;
+	}
+	void setFieldMember(MemberPtr fieldMember){
+		this->fieldMember = fieldMember;
+	}
+	void setMethodMember(MemberPtr methodMember){
+		this->methodMember = methodMember;
 	}
 };
 

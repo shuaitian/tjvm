@@ -1,5 +1,7 @@
 #include "constantitemreader.h"
 #include <stdio.h>
+#include <string>
+using namespace std;
 
 shared_ptr<ConstantItemReader> ConstantItemReader::self;
 
@@ -99,14 +101,14 @@ shared_ptr<ConstantNameAndTypeItem> ConstantItemReader::readNameAndTypeItem(shar
 shared_ptr<ConstantClassItem> ConstantItemReader::readClassItem(shared_ptr<ClassReader> classReader){
 	shared_ptr<ConstantClassItem> ret = make_shared<ConstantClassItem>();
 	u2 index = classReader->readU2();
-	ret->setIndex(index);
+	ret->setNameIndex(index);
 	return ret;
 }
 
 shared_ptr<ConstantStringItem> ConstantItemReader::readStringItem(shared_ptr<ClassReader> classReader){
 	shared_ptr<ConstantStringItem> ret = make_shared<ConstantStringItem>();
 	u2 index = classReader->readU2();
-	ret->setIndex(index);
+	ret->setStringIndex(index);
 	return ret;
 }
 
@@ -116,6 +118,12 @@ shared_ptr<ConstantUTF8Item> ConstantItemReader::readUTF8Item(shared_ptr<ClassRe
 	shared_ptr<ByteArray> bytes = classReader->readBytes(length);
 	ret->setLength(length);
 	ret->setBytes(bytes);
+	if(bytes){
+		unsigned char* p = bytes->getData();
+		unsigned long pSize = bytes->getCurrentSize();
+		string str(p,p+pSize);
+		ret->setStr(str);
+	}
 	return ret;
 }
 

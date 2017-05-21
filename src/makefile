@@ -14,8 +14,8 @@ LIBS    := -L../lib -lboost_program_options -lminizip -lboost_system -lboost_fil
 LDFLAGS :=
 DEFINES :=
 INCLUDE := -I../include
-CFLAGS  := -g -Wall -O3 $(DEFINES) $(INCLUDE)
-CXXFLAGS:= $(CFLAGS) -DHAVE_CONFIG_H
+CFLAGS  := -g -Wall  $(DEFINES) $(INCLUDE)
+CXXFLAGS:= $(CFLAGS)
   
   
 #i think you should do anything here
