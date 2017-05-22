@@ -72,8 +72,46 @@ void start(){
 		(classEntity->getConstantPool())->display();
 		printf("this class:#%u\n",classEntity->getThisClass());
 		printf("super class:#%u\n",classEntity->getSuperClass());
-		(classEntity->getFieldMember())->display("field");
-		(classEntity->getMethodMember())->display("method");
+		//(classEntity->getFieldMember())->display("field");
+		//(classEntity->getMethodMember())->display("method");
+		printf("class attribute count:%u\n",(unsigned int)classEntity->getAttributes()->size());
+		MemberPtr methodMember = classEntity->getMethodMember();
+		MemItemVecPtr memberItems = methodMember->getMemberItems();
+		printf("method member count:%u\n",(unsigned int)memberItems->size());
+		vector<shared_ptr<MemberItem> >::iterator iter;
+		for(iter=memberItems->begin();iter!=memberItems->end();++iter){
+			MemberItemPtr memItemPtr = *iter;
+			printf("method name:%s\n",(memItemPtr->getName()).data());
+			AttrVecPtr attrs = memItemPtr->getAttributes();
+			vector<Attribute>::iterator iter1;
+			for(iter1=attrs->begin();iter1!=attrs->end();++iter1){
+				Attribute attr = *iter1;
+				shared_ptr<AttributeItem> attrItem= attr.getAttributeItem();
+				if(attr.getAttrName() == "Code"){
+					shared_ptr<CodeAttrItem> codeAttrItem = static_pointer_cast<CodeAttrItem>(attrItem);
+					//printf("code length:%u\n",codeAttrItem->getCodeLength());
+					//printf("exception table length:%u\n",codeAttrItem->getExceptionTableLength());
+					AttrVecPtr codeAttr = codeAttrItem->getAttributes();
+					vector<Attribute>::iterator codeAttrIter;
+					for(codeAttrIter=codeAttr->begin();codeAttrIter!=codeAttr->end();++codeAttrIter){
+						Attribute codeAttr = *codeAttrIter;
+						shared_ptr<AttributeItem> codeAttrItem= codeAttr.getAttributeItem();
+						if(codeAttr.getAttrName() == "LineNumberTable"){
+							//printf("line number table \n");
+						}
+					}
+				}
+				if(attr.getAttrName() == "Exceptions"){
+					shared_ptr<ExceptionsAttrItem> excepAttrItem = static_pointer_cast<ExceptionsAttrItem>(attrItem);
+					printf("\texception count:%u\n",excepAttrItem->getNumberOfExceptions());
+				}
+
+				if(attr.getAttrName() == "LineNumberTable"){
+					printf("line number table\n");
+				}
+				
+			}
+		}
 	}
 	else{
 		cout << "not found" << endl;

@@ -7,6 +7,33 @@ void ConstantPool::add(shared_ptr<ConstantItem> item){
 	pool.push_back(item);
 }
 
+string_ref ConstantPool::readUTF8ByIndex(u2 index){
+	shared_ptr<ConstantItem> item = readConstItemByOwnIndex(index);
+	if(!item){
+		printf("error ConstantPool::readUTF8ByIndex(u2 index) illegal paramenter 'index'");
+		exit(0);
+		//TODO throw exception
+	}
+	if(item->getTag() != CONSTANT_Utf8){
+		printf("tag:%u\n",item->getTag());
+		printf("error ConstantPool::readUTF8ByIndex(u2 index) item->getTag()!=CONSTANT_Utf8\n");
+		exit(0);
+		//TODO throw exception
+	}
+	shared_ptr<ConstantUTF8Item> utf8Item = static_pointer_cast<ConstantUTF8Item>(item);
+	return utf8Item->getStr();
+}
+
+shared_ptr<ConstantItem> ConstantPool::readConstItemByOwnIndex(u2 index){
+	vector<shared_ptr<ConstantItem> >::iterator iter;
+	for(iter=pool.begin();iter!=pool.end();++iter){
+		shared_ptr<ConstantItem> item = *iter;
+		if(item->getOwnIndex() == index){
+			return item;
+		}
+	}
+	return make_shared<ConstantItem>();
+}
 void ConstantPool::display(){
 	vector<shared_ptr<ConstantItem> >::iterator iter;
 	printf("=====================Constant Pool=================================\n");

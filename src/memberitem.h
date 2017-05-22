@@ -3,6 +3,7 @@
 #include "def.h"
 #include <vector>
 #include <boost/smart_ptr.hpp>
+#include <boost/utility/string_ref.hpp>
 #include "attribute.h"
 using namespace std;
 using namespace boost;
@@ -15,10 +16,18 @@ class MemberItem{
 private:
 	u2 access_flags;
 	u2 name_index;
+	string_ref name;
 	u2 descriptor_index;
 	u2 attributes_count;
 	AttrVecPtr attributes;
 public:
+	void setName(string_ref name){
+		this->name = name;
+	}
+	string_ref getName(){
+		return this->name;
+	}
+
 	void setAccessFlags(u2 access_flags){
 		this->access_flags = access_flags;
 	}

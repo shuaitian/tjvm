@@ -23,27 +23,28 @@ shared_ptr<ClassEntity> ClassParser::parser(shared_ptr<ByteArray> byteArray){
 	classEntity->setThisClass(classReader->readU2());
 	classEntity->setSuperClass(classReader->readU2());
 	classEntity->setInterfaces(readInterfaces(classReader));
-	classEntity->setFieldMember(readFieldMember(classReader));
-	classEntity->setMethodMember(readMethodMember(classReader));
+	classEntity->setFieldMember(readFieldMember(classReader,classEntity->getConstantPool()));
+	classEntity->setMethodMember(readMethodMember(classReader,classEntity->getConstantPool()));
+	classEntity->setAttributes(MemberItemReader::instance()->readAttributes(classReader,classEntity->getConstantPool()));
 	return classEntity;
 }
 
-MemberPtr ClassParser::readFieldMember(shared_ptr<ClassReader> classReader){
+MemberPtr ClassParser::readFieldMember(shared_ptr<ClassReader> classReader,ConstantPoolPtr constPoolPtr){
 	MemberPtr ret = make_shared<Member>();
 	u2 fieldMemberCount = classReader->readU2();
 	MemReaderPtr memReader = MemberItemReader::instance();
 //	printf("field count:%u\n",fieldMemberCount);
 	MemItemVecPtr vec = make_shared<vector<shared_ptr<MemberItem> > >();
 	for(u2 i = 0; i<fieldMemberCount;i++){
-		MemberItemPtr memberItem = memReader->read(classReader);
+		MemberItemPtr memberItem = memReader->read(classReader,constPoolPtr);
 		vec->push_back(memberItem); 
 	}
 	ret->setMemberItems(vec);
 	return ret;
 }
 
-MemberPtr ClassParser::readMethodMember(shared_ptr<ClassReader> classReader){
-	return readFieldMember(classReader);
+MemberPtr ClassParser::readMethodMember(shared_ptr<ClassReader> classReader,ConstantPoolPtr constPoolPtr){
+	return readFieldMember(classReader,constPoolPtr);
 }
 
 shared_ptr<vector<u2> > ClassParser::readInterfaces(shared_ptr<ClassReader> classReader){
@@ -51,10 +52,8 @@ shared_ptr<vector<u2> > ClassParser::readInterfaces(shared_ptr<ClassReader> clas
 	shared_ptr<vector<u2> > ret = make_shared<vector<u2> >();
 	for(u2 i=0; i<interfacesCount;i++){
 		u2 index = classReader->readU2();
-		printf("#%u",index);
 		ret->push_back(index);
 	}
-	printf("\n");
 	return  ret;
 }
 

@@ -3,6 +3,7 @@
 #include "def.h"
 #include "constantpool.h"
 #include "member.h"
+#include "memberitemreader.h"
 #include <vector>
 #include <boost/smart_ptr.hpp>
 using namespace std;
@@ -18,6 +19,7 @@ private:
 	shared_ptr<vector<u2> > interfaces;
 	MemberPtr fieldMember;
 	MemberPtr methodMember;
+	AttrVecPtr attributes;
 public:
 	u4 getMagic(){
 		return magic;
@@ -49,6 +51,9 @@ public:
 	MemberPtr getMethodMember(){
 		return methodMember;
 	}
+	AttrVecPtr getAttributes(){
+		return this->attributes;
+	}
 	void setMagic(u4 magic){
 		this->magic = magic;
 	}
@@ -78,6 +83,9 @@ public:
 	}
 	void setMethodMember(MemberPtr methodMember){
 		this->methodMember = methodMember;
+	}
+	void setAttributes(AttrVecPtr attr){
+		this->attributes = attr;
 	}
 };
 

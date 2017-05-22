@@ -17,8 +17,9 @@ private:
 	ClassParser();
 	shared_ptr<ConstantPool> readConstantPool(shared_ptr<ClassReader> classReader);
 	shared_ptr<vector<u2> > readInterfaces(shared_ptr<ClassReader> classReader);
-	MemberPtr readFieldMember(shared_ptr<ClassReader> classReader);
-	MemberPtr readMethodMember(shared_ptr<ClassReader> classReader);
+	MemberPtr readFieldMember(shared_ptr<ClassReader> classReader,ConstantPoolPtr constPoolPtr);
+	MemberPtr readMethodMember(shared_ptr<ClassReader> classReader,ConstantPoolPtr constPoolPtr);
+	AttrVecPtr readAttributes(shared_ptr<ClassReader> classReader);
 public:
 	static shared_ptr<ClassParser> instance();
 	shared_ptr<ClassEntity> parser(shared_ptr<ByteArray> byteArray);

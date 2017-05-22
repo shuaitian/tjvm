@@ -8,5 +8,6 @@ void Member::display(const char* memberType){
 		printf("\tname index:%u\n",memItem->getNameIndex());
 		printf("\tdescriptor index:%u\n",memItem->getDescriptorIndex());
 		printf("\tattribute count:%u\n",memItem->getAttributesCount());
+		printf("\t-----------------\n");
 	}
 }
