@@ -10,13 +10,17 @@
 #include "classreader.h"
 #include "classentity.h"
 #include "classparser.h"
-using namespace std;
+#include "frame.h"
+#include "operandstack.h"
+
+using namespace std; 
 using namespace boost;
 
 const char* VERSION = "1.0.0";
 
 void printConfig();
 void start();
+void testFrame();
 
 int main(int argc,char* argv[]){
 	//parse config from command line
@@ -40,7 +44,36 @@ int main(int argc,char* argv[]){
 		exit(0);
 	}
 
-	start();
+	//start();
+	testFrame();
+}
+
+void testFrame(){
+	FramePtr frame = Frame::build(200,200);
+	OperandStackPtr operandStack = frame->getOperandStack();
+	operandStack->pushInt(100);
+	operandStack->pushFloat(21.23);
+	operandStack->pushLong(3232323);
+	double d = 10.4;
+	operandStack->pushDouble(d);
+	
+	cout << "double:" << operandStack->popDouble() << endl;
+	cout << "long:" << operandStack->popLong() << endl;
+	cout << "float:" << operandStack->popFloat() << endl;
+	cout << "int:" << operandStack->popInt() << endl;
+	
+	cout << "----------------------------------" << endl;
+	LocalVarsPtr localVars = frame->getLocalVars();
+	localVars->setInt(0,12);
+	localVars->setFloat(1,12.043434);
+	localVars->setLong(2,4443424234);
+	localVars->setDouble(4,55.66778);
+
+	cout << "double:" << localVars->getDouble(4) << endl;
+	cout << "long:" << localVars->getLong(2) << endl;
+	cout << "float:" << localVars->getFloat(1) << endl;
+	cout << "int:" << localVars->getInt(0) << endl;
+
 }
 
 void start(){
