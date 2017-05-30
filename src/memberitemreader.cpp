@@ -19,6 +19,7 @@ MemberItemPtr MemberItemReader::read(shared_ptr<ClassReader> classReader,Constan
 	ret->setNameIndex(classReader->readU2());
 	ret->setName(constPoolPtr->readUTF8ByIndex(ret->getNameIndex()));
 	ret->setDescriptorIndex(classReader->readU2());
+	ret->setDescriptor(constPoolPtr->readUTF8ByIndex(ret->getDescriptorIndex()));
 //	ret->setAttributesCount(classReader->readU2());
 	ret->setAttributes(readAttributes(classReader,constPoolPtr));
 	ret->setAttributesCount(ret->getAttributes()->size());

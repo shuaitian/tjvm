@@ -26,6 +26,8 @@ public:
 	j_double popDouble();
 	void pushRef(ObjectPtr ref);
 	ObjectPtr popRef();
+	void pushSlot(Slot slot);
+	Slot popSlot();
 	
 	static OperandStackPtr build(uint32_t maxStack);
 	~OperandStack();

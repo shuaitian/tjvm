@@ -120,3 +120,11 @@ ObjectPtr OperandStack::popRef(){
 
 	return slots[--size].ref;
 }
+
+void OperandStack::pushSlot(Slot slot){
+	slots[size++] = slot;
+}
+
+Slot OperandStack::popSlot(){
+	return slots[--size];
+}

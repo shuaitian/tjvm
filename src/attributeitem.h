@@ -126,6 +126,7 @@ public:
 	}
 
 };
+typedef shared_ptr<CodeAttrItem> CodeAttrItemPtr;
 
 class ExceptionsAttrItem : public AttributeItem{
 private:

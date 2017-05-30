@@ -7,6 +7,10 @@ class Object;
 typedef shared_ptr<Object> ObjectPtr;
 class Object
 {
+public:
+	static ObjectPtr nullPtr(){
+		return make_shared<Object>();
+	}
 };
 
 #endif

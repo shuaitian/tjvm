@@ -11,3 +11,13 @@ void Member::display(const char* memberType){
 		printf("\t-----------------\n");
 	}
 }
+
+MemberItemPtr Member::getMemberItemByNameAndDesc(string_ref name,string_ref desc){
+	vector<MemberItemPtr>::iterator iter;
+	for(iter=member_items->begin();iter!=member_items->end();++iter){
+		if(((*iter)->getName() == name) && ((*iter)->getDescriptor() == desc)){
+			return (*iter);
+		}
+	}
+	return MemberItemPtr();
+}

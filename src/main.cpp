@@ -12,6 +12,8 @@
 #include "classparser.h"
 #include "frame.h"
 #include "operandstack.h"
+#include "bytecodereader.h"
+#include "instructionengine.h"
 
 using namespace std; 
 using namespace boost;
@@ -21,6 +23,7 @@ const char* VERSION = "1.0.0";
 void printConfig();
 void start();
 void testFrame();
+void testEngine();
 
 int main(int argc,char* argv[]){
 	//parse config from command line
@@ -45,7 +48,37 @@ int main(int argc,char* argv[]){
 	}
 
 	//start();
-	testFrame();
+	//testFrame();
+	testEngine();
+}
+
+void testEngine(){
+	shared_ptr<Config> config = Config::instance();
+	shared_ptr<ClassFileReader> classFileReader = ClassFileReader::instance();
+	shared_ptr<ByteArray> classFile = classFileReader->readClassFile(config->get("mainClass"));
+	if(classFile){
+		ClassEntityPtr classEntity = ClassParser::instance()->parser(classFile);
+		MemberItemPtr mainItem = classEntity->getMethodMember()->getMainMethod();
+		//classEntity->getConstantPool()->display();
+		if(mainItem){
+			printf("mainitem is not null\n");
+			CodeAttrItemPtr codeItem = mainItem->getCodeAttribute();
+			printf("Found it main\n");
+			printf("descriptor:%s\n",(mainItem->getDescriptor()).data());
+			printf("max stack:%u\n",codeItem->getMaxStack());
+			printf("max locals%u\n",codeItem->getMaxLocals());
+			printf("code length:%u\n",codeItem->getCodeLength());
+			FramePtr frame = Frame::build(codeItem->getMaxLocals(),codeItem->getMaxStack());
+			ByteCodeReaderPtr codeReader = ByteCodeReader::build(codeItem);
+			InstructionEnginePtr engine = InstructionEngine::build(frame,codeReader);
+			while(codeReader->hasMore()){
+				uint8_t c = codeReader->readUint8();
+				printf("inst:%x ...\n",c);
+				engine->run(c);
+			}
+			printf("end\n");
+		}
+	}
 }
 
 void testFrame(){

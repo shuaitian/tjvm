@@ -43,8 +43,19 @@ MemberPtr ClassParser::readFieldMember(shared_ptr<ClassReader> classReader,Const
 	return ret;
 }
 
-MemberPtr ClassParser::readMethodMember(shared_ptr<ClassReader> classReader,ConstantPoolPtr constPoolPtr){
-	return readFieldMember(classReader,constPoolPtr);
+MethodMemberPtr ClassParser::readMethodMember(shared_ptr<ClassReader> classReader,ConstantPoolPtr constPoolPtr){
+	//return readFieldMember(classReader,constPoolPtr);
+	MethodMemberPtr ret = make_shared<MethodMember>();
+	u2 fieldMemberCount = classReader->readU2();
+	MemReaderPtr memReader = MemberItemReader::instance();
+//	printf("field count:%u\n",fieldMemberCount);
+	MemItemVecPtr vec = make_shared<vector<shared_ptr<MemberItem> > >();
+	for(u2 i = 0; i<fieldMemberCount;i++){
+		MemberItemPtr memberItem = memReader->read(classReader,constPoolPtr);
+		vec->push_back(memberItem); 
+	}
+	ret->setMemberItems(vec);
+	return ret;
 }
 
 shared_ptr<vector<u2> > ClassParser::readInterfaces(shared_ptr<ClassReader> classReader){

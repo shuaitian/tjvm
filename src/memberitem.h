@@ -5,6 +5,7 @@
 #include <boost/smart_ptr.hpp>
 #include <boost/utility/string_ref.hpp>
 #include "attribute.h"
+#include <stdio.h>
 using namespace std;
 using namespace boost;
 class MemberItem;
@@ -19,8 +20,19 @@ private:
 	string_ref name;
 	u2 descriptor_index;
 	u2 attributes_count;
+	string_ref descriptor;
 	AttrVecPtr attributes;
 public:
+	CodeAttrItemPtr getCodeAttribute();
+
+	void setDescriptor(string_ref descriptor){
+		this->descriptor = descriptor;
+	}
+
+	string_ref getDescriptor(){
+		return this->descriptor;
+	}
+
 	void setName(string_ref name){
 		this->name = name;
 	}
