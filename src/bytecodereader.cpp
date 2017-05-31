@@ -7,6 +7,12 @@ ByteCodeReader::ByteCodeReader(shared_ptr<CodeAttrItem> cai):
 {
 	this->code = cai->getCode();	
 }
+
+void ByteCodeReader::skipPadding(){
+	while(pc % 4 !=0)
+		readUint8();
+}
+
 ByteCodeReaderPtr ByteCodeReader::build(shared_ptr<CodeAttrItem> cai)
 {
 	ByteCodeReaderPtr ret(new ByteCodeReader(cai));
@@ -37,4 +43,19 @@ int32_t ByteCodeReader::readInt32(){
 
 bool ByteCodeReader::hasMore(){
 	return ((uint32_t)pc) < (code->size());
+}
+
+shared_ptr<vector<int32_t> > ByteCodeReader::readInt32s(int32_t size){
+	shared_ptr<vector<int32_t> > ret = make_shared<vector<int32_t> >();
+	for(int32_t i = 0; i < size; i++){
+		ret->push_back(readInt32());
+	}
+	return ret;
+}
+
+j_int ByteCodeReader::getPC(){
+	return this->pc;
+}
+void ByteCodeReader::setPC(j_int pc){
+	this->pc = pc;
 }

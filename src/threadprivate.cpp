@@ -2,6 +2,7 @@
 
 
 ThreadPrivate::ThreadPrivate():
+	pc(0),
 	stack(StackFrame::build(1024))	
 {
 	

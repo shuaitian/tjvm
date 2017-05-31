@@ -3,6 +3,14 @@
 #include <string.h>
 #include <stdio.h>
 
+void LocalVars::display(){
+	printf("[ ");
+	for(uint32_t i =0;i<size;i++){
+		printf("%d ",slots[i].num);
+	}
+	printf("]");
+}
+
 LocalVars::LocalVars(uint32_t maxLocals):
 	slots(new Slot[maxLocals]),
 	size(maxLocals)

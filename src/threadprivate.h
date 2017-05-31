@@ -7,7 +7,11 @@
 
 using namespace boost;
 class ThreadPrivate;
+class StackFrame;
+class Frame;
 
+typedef shared_ptr<Frame> FramePtr;
+typedef shared_ptr<StackFrame> StackFramePtr;
 typedef shared_ptr<ThreadPrivate> ThreadPrivatePtr;
 
 class ThreadPrivate

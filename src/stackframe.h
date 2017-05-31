@@ -6,6 +6,8 @@
 using namespace boost;
 
 class StackFrame;
+class Frame;
+typedef shared_ptr<Frame> FramePtr;
 typedef shared_ptr<StackFrame> StackFramePtr;
 
 class StackFrame

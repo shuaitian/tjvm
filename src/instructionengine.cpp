@@ -3,6 +3,7 @@
 #include <stdio.h>
 #include <boost/bind.hpp>
 #include <stdio.h>
+#include <math.h>
 
 
 
@@ -13,10 +14,14 @@ void InstructionEngine::regist(u1 code,function<void()> handler){
 void InstructionEngine::run(u1 code){
 	function<void()> handler = codeMap[code];
 	if(handler){
+		pc = currentCodeReader->getPC() - 1; //保存当前指令的pc
 		handler();
+		currentFrame->getThreadPrivate()->setPC(currentCodeReader->getPC()); //设置下一条指令的pc
 	}
 	else{
 		printf("unknow instruction:%x\n",code);
+		currentFrame->display();
+		exit(-1);
 	}
 }	
 
@@ -124,6 +129,119 @@ InstructionEngine::InstructionEngine(FramePtr curFrame,ByteCodeReaderPtr curCode
 	regist(dup2_x2,bind(&InstructionEngine::dup2X2Handler,this));
 	regist(tt::swap,bind(&InstructionEngine::swapHandler,this));
 
+	//math
+	regist(tt::irem,bind(&InstructionEngine::iremHandler,this));
+	regist(tt::lrem,bind(&InstructionEngine::lremHandler,this));
+	regist(tt::frem,bind(&InstructionEngine::fremHandler,this));
+	regist(tt::drem,bind(&InstructionEngine::dremHandler,this));
+
+	regist(tt::iadd,bind(&InstructionEngine::iaddHandler,this));
+	regist(tt::ladd,bind(&InstructionEngine::laddHandler,this));
+	regist(tt::fadd,bind(&InstructionEngine::faddHandler,this));
+	regist(tt::dadd,bind(&InstructionEngine::daddHandler,this));
+
+	regist(tt::isub,bind(&InstructionEngine::isubHandler,this));
+	regist(tt::lsub,bind(&InstructionEngine::lsubHandler,this));
+	regist(tt::fsub,bind(&InstructionEngine::fsubHandler,this));
+	regist(tt::dsub,bind(&InstructionEngine::dsubHandler,this));
+
+	regist(tt::imul,bind(&InstructionEngine::imulHandler,this));
+	regist(tt::lmul,bind(&InstructionEngine::lmulHandler,this));
+	regist(tt::fmul,bind(&InstructionEngine::fmulHandler,this));
+	regist(tt::dmul,bind(&InstructionEngine::dmulHandler,this));
+
+	regist(tt::idiv,bind(&InstructionEngine::idivHandler,this));
+	regist(tt::ldiv,bind(&InstructionEngine::ldivHandler,this));
+	regist(tt::fdiv,bind(&InstructionEngine::fdivHandler,this));
+	regist(tt::ddiv,bind(&InstructionEngine::ddivHandler,this));
+
+	regist(tt::ineg,bind(&InstructionEngine::inegHandler,this));
+	regist(tt::lneg,bind(&InstructionEngine::lnegHandler,this));
+	regist(tt::fneg,bind(&InstructionEngine::fnegHandler,this));
+	regist(tt::dneg,bind(&InstructionEngine::dnegHandler,this));
+
+	regist(tt::ishl,bind(&InstructionEngine::ishlHandler,this));
+	regist(tt::lshl,bind(&InstructionEngine::lshlHandler,this));
+	regist(tt::ishr,bind(&InstructionEngine::ishrHandler,this));
+	regist(tt::lshr,bind(&InstructionEngine::lshrHandler,this));
+	regist(tt::iushr,bind(&InstructionEngine::iushrHandler,this));
+	regist(tt::lushr,bind(&InstructionEngine::lushrHandler,this));
+
+	regist(tt::iand,bind(&InstructionEngine::iandHandler,this));
+	regist(tt::land,bind(&InstructionEngine::landHandler,this));
+	regist(tt::ior,bind(&InstructionEngine::iorHandler,this));
+	regist(tt::lor,bind(&InstructionEngine::lorHandler,this));
+	regist(tt::ixor,bind(&InstructionEngine::ixorHandler,this));
+	regist(tt::lxor,bind(&InstructionEngine::lxorHandler,this));
+	regist(tt::iinc,bind(&InstructionEngine::iincHandler,this));
+
+	//conversion
+	regist(tt::i2l,bind(&InstructionEngine::i2lHandler,this));
+	regist(tt::i2f,bind(&InstructionEngine::i2fHandler,this));
+	regist(tt::i2d,bind(&InstructionEngine::i2dHandler,this));
+	regist(tt::l2i,bind(&InstructionEngine::l2iHandler,this));
+	regist(tt::l2f,bind(&InstructionEngine::l2fHandler,this));
+	regist(tt::l2d,bind(&InstructionEngine::l2dHandler,this));
+	regist(tt::f2i,bind(&InstructionEngine::f2iHandler,this));
+	regist(tt::f2l,bind(&InstructionEngine::f2lHandler,this));
+	regist(tt::f2d,bind(&InstructionEngine::f2dHandler,this));
+	regist(tt::d2i,bind(&InstructionEngine::d2iHandler,this));
+	regist(tt::d2l,bind(&InstructionEngine::d2lHandler,this));
+	regist(tt::d2f,bind(&InstructionEngine::d2fHandler,this));
+	regist(tt::i2b,bind(&InstructionEngine::i2bHandler,this));
+	regist(tt::i2c,bind(&InstructionEngine::i2cHandler,this));
+	regist(tt::i2s,bind(&InstructionEngine::i2sHandler,this));
+
+	//comparison
+	regist(tt::lcmp,bind(&InstructionEngine::lcmpHandler,this));
+	regist(tt::fcmpl,bind(&InstructionEngine::fcmplHandler,this));
+	regist(tt::fcmpg,bind(&InstructionEngine::fcmpgHandler,this));
+	regist(tt::dcmpl,bind(&InstructionEngine::dcmplHandler,this));
+	regist(tt::dcmpg,bind(&InstructionEngine::dcmpgHandler,this));
+	regist(tt::ifeq,bind(&InstructionEngine::ifeqHandler,this));
+	regist(tt::ifne,bind(&InstructionEngine::ifneHandler,this));
+	regist(tt::iflt,bind(&InstructionEngine::ifltHandler,this));
+	regist(tt::ifge,bind(&InstructionEngine::ifgeHandler,this));
+	regist(tt::ifgt,bind(&InstructionEngine::ifgtHandler,this));
+	regist(tt::ifle,bind(&InstructionEngine::ifleHandler,this));
+	regist(tt::if_icmpeq,bind(&InstructionEngine::ifIcmpeqHandler,this));
+	regist(tt::if_icmpne,bind(&InstructionEngine::ifIcmpneHandler,this));
+	regist(tt::if_icmplt,bind(&InstructionEngine::ifIcmpltHandler,this));
+	regist(tt::if_icmpge,bind(&InstructionEngine::ifIcmpgeHandler,this));
+	regist(tt::if_icmpgt,bind(&InstructionEngine::ifIcmpgtHandler,this));
+	regist(tt::if_icmple,bind(&InstructionEngine::ifIcmpleHandler,this));
+	regist(tt::if_acmpeq,bind(&InstructionEngine::ifAcmpeqHandler,this));
+	regist(tt::if_acmpne,bind(&InstructionEngine::ifAcmpneHandler,this));
+
+	//control
+	regist(tt::goto_,bind(&InstructionEngine::gotoHandler,this));
+	regist(tt::jsr,bind(&InstructionEngine::jsrHandler,this));
+	regist(tt::ret,bind(&InstructionEngine::retHandler,this));
+	regist(tt::tableswitch,bind(&InstructionEngine::tableswitchHandler,this));
+	regist(tt::lookupswitch,bind(&InstructionEngine::lookupswitchHandler,this));
+	//regist(tt::ireturn,bind(&InstructionEngine::ireturnHandler,this));
+	//regist(tt::lreturn,bind(&InstructionEngine::lreturnHandler,this));
+	//regist(tt::freturn,bind(&InstructionEngine::freturnHandler,this));
+	//regist(tt::dreturn,bind(&InstructionEngine::dreturnHandler,this));
+	//regist(tt::areturn,bind(&InstructionEngine::areturnHandler,this));
+	//regist(tt::return_,bind(&InstructionEngine::returnHandler,this));
+
+	//extended
+	regist(tt::ifnull,bind(&InstructionEngine::ifnullHandler,this));
+	regist(tt::ifnonnull,bind(&InstructionEngine::ifnonnullHandler,this));
+
+
+}
+
+inline void InstructionEngine::branch(j_int offset){
+	j_int res = pc + offset ;
+	//printf("after branch[%d%d]:%d\n",pc,offset,res);
+	currentCodeReader->setPC(res);
+}
+
+inline j_int InstructionEngine::readOffset16(){
+	int16_t val = currentCodeReader->readInt16();
+	return static_cast<j_int>(val);
 }
 
 
@@ -483,4 +601,524 @@ inline void InstructionEngine::swapHandler(){
 	currentOperandStack->pushSlot(slot1);
 	currentOperandStack->pushSlot(slot2);
 }		
+
+inline void InstructionEngine::iremHandler(){
+	j_int v2 = currentOperandStack->popInt();
+	j_int v1 = currentOperandStack->popInt();
+	if(v2 == 0){
+		//TODO throw exception
+		printf("irem error,v2 == 0\n");
+		exit(-1);
+	}
+	j_int result = v1 % v2;
+	currentOperandStack->pushInt(result);
+}
+inline void InstructionEngine::lremHandler(){
+	j_long v2 = currentOperandStack->popLong();
+	j_long v1 = currentOperandStack->popLong();
+	if(v2 == 0){
+		//TODO throw exception
+		printf("lrem error,v2 == 0\n");
+		exit(-1);
+	}
+	j_long result = v1 % v2;
+	currentOperandStack->pushLong(result);
+}
+inline void InstructionEngine::fremHandler(){
+	j_float v2 = currentOperandStack->popFloat();
+	j_float v1 = currentOperandStack->popFloat();
+	j_float result = fmod(v1,v2);
+	currentOperandStack->pushFloat(result);
+}
+inline void InstructionEngine::dremHandler(){
+	j_double v2 = currentOperandStack->popDouble();
+	j_double v1 = currentOperandStack->popDouble();
+	j_double result = fmod(v1,v2);
+	currentOperandStack->pushDouble(result);
+}
+
+inline void InstructionEngine::iaddHandler(){
+	j_int v1 = currentOperandStack->popInt();
+	j_int v2 = currentOperandStack->popInt();
+	j_int result = v1 + v2;
+	currentOperandStack->pushInt(result);
+}
+inline void InstructionEngine::laddHandler(){
+	j_long v1 = currentOperandStack->popLong();
+	j_long v2 = currentOperandStack->popLong();
+	j_long result = v1 + v2;
+	currentOperandStack->pushLong(result);
+}
+inline void InstructionEngine::faddHandler(){
+	j_float v1 = currentOperandStack->popFloat();
+	j_float v2 = currentOperandStack->popFloat();
+	j_float result = v1 + v2;
+	currentOperandStack->pushFloat(result);
+}
+inline void InstructionEngine::daddHandler(){
+	j_double v1 = currentOperandStack->popDouble();
+	j_double v2 = currentOperandStack->popDouble();
+	j_double result = v1 + v2;
+	currentOperandStack->pushDouble(result);
+}
+
+inline void InstructionEngine::isubHandler(){
+	j_int v1 = currentOperandStack->popInt();
+	j_int v2 = currentOperandStack->popInt();
+	j_int result = v2 - v1;
+	currentOperandStack->pushInt(result);
+}
+inline void InstructionEngine::lsubHandler(){
+	j_long v1 = currentOperandStack->popLong();
+	j_long v2 = currentOperandStack->popLong();
+	j_long result = v2 - v1;
+	currentOperandStack->pushLong(result);
+}
+inline void InstructionEngine::fsubHandler(){
+	j_float v1 = currentOperandStack->popFloat();
+	j_float v2 = currentOperandStack->popFloat();
+	j_float result = v2 - v1;
+	currentOperandStack->pushFloat(result);
+}
+inline void InstructionEngine::dsubHandler(){
+	j_double v1 = currentOperandStack->popDouble();
+	j_double v2 = currentOperandStack->popDouble();
+	j_double result = v2 - v1;
+	currentOperandStack->pushDouble(result);
+}
+
+inline void InstructionEngine::imulHandler(){
+	j_int v1 = currentOperandStack->popInt();
+	j_int v2 = currentOperandStack->popInt();
+	j_int result = v2 * v1;
+	currentOperandStack->pushInt(result);
+}
+inline void InstructionEngine::lmulHandler(){
+	j_long v1 = currentOperandStack->popLong();
+	j_long v2 = currentOperandStack->popLong();
+	j_long result = v2 * v1;
+	currentOperandStack->pushLong(result);
+}
+inline void InstructionEngine::fmulHandler(){
+	j_float v1 = currentOperandStack->popFloat();
+	j_float v2 = currentOperandStack->popFloat();
+	j_float result = v2 * v1;
+	currentOperandStack->pushFloat(result);
+}
+inline void InstructionEngine::dmulHandler(){
+	j_double v1 = currentOperandStack->popDouble();
+	j_double v2 = currentOperandStack->popDouble();
+	j_double result = v2 * v1;
+	currentOperandStack->pushDouble(result);
+}
+
+inline void InstructionEngine::idivHandler(){
+	j_int v1 = currentOperandStack->popInt();
+	j_int v2 = currentOperandStack->popInt();
+	if(v2 == 0){
+		//TODO throw exception
+		printf("idiv error ,v2 == 0\n");
+		exit(-1);
+	}
+	j_int result = v2 / v1;
+	currentOperandStack->pushInt(result);
+}
+inline void InstructionEngine::ldivHandler(){
+	j_long v1 = currentOperandStack->popLong();
+	j_long v2 = currentOperandStack->popLong();
+	if(v2 == 0){
+		//TODO throw exception
+		printf("ldiv error ,v2 == 0\n");
+		exit(-1);
+	}
+	j_long result = v2 / v1;
+	currentOperandStack->pushLong(result);
+}
+inline void InstructionEngine::fdivHandler(){
+	j_float v1 = currentOperandStack->popFloat();
+	j_float v2 = currentOperandStack->popFloat();
+	j_float result = v2 / v1;
+	currentOperandStack->pushFloat(result);
+}
+inline void InstructionEngine::ddivHandler(){
+	j_double v1 = currentOperandStack->popDouble();
+	j_double v2 = currentOperandStack->popDouble();
+	j_double result = v2 / v1;
+	currentOperandStack->pushDouble(result);
+}
+
+inline void InstructionEngine::inegHandler(){
+	j_int val = currentOperandStack->popInt();
+	currentOperandStack->pushInt(-val);
+}
+inline void InstructionEngine::lnegHandler(){
+	j_long val = currentOperandStack->popLong();
+	currentOperandStack->pushLong(-val);
+}
+inline void InstructionEngine::fnegHandler(){
+	j_float val = currentOperandStack->popFloat();
+	currentOperandStack->pushFloat(-val);
+}
+inline void InstructionEngine::dnegHandler(){
+	j_double val = currentOperandStack->popDouble();
+	currentOperandStack->pushDouble(-val);
+}
+
+inline void InstructionEngine::ishlHandler(){
+	j_int v1 = currentOperandStack->popInt();
+	j_int v2 = currentOperandStack->popInt();
+	currentOperandStack->pushInt(v2 << v1);
+}
+inline void InstructionEngine::lshlHandler(){
+	j_int v1 = currentOperandStack->popInt();
+	j_long v2 = currentOperandStack->popLong();
+	currentOperandStack->pushLong(v2 << v1);
+}
+inline void InstructionEngine::ishrHandler(){
+	j_int v1 = currentOperandStack->popInt();
+	j_int v2 = currentOperandStack->popInt();
+	currentOperandStack->pushInt(v2 >> v1);
+}
+inline void InstructionEngine::lshrHandler(){
+	j_int v1 = currentOperandStack->popInt();
+	j_long v2 = currentOperandStack->popLong();
+	currentOperandStack->pushLong(v2 >> v1);
+}
+inline void InstructionEngine::iushrHandler(){
+	j_int v1 = currentOperandStack->popInt();
+	j_int v2 = currentOperandStack->popInt();
+	j_int result = static_cast<j_int>(static_cast<uint32_t>(v2) >> v1);
+	currentOperandStack->pushInt(result);
+}
+inline void InstructionEngine::lushrHandler(){
+	j_int v1 = currentOperandStack->popInt();
+	j_long v2 = currentOperandStack->popLong();
+	j_int result = static_cast<j_int>(static_cast<uint64_t>(v2) >> v1);
+	currentOperandStack->pushLong(result);
+}
+
+inline void InstructionEngine::iandHandler(){
+	j_int v1 = currentOperandStack->popInt();
+	j_int v2 = currentOperandStack->popInt();
+	currentOperandStack->pushInt(v2 & v1);
+}
+inline void InstructionEngine::landHandler(){
+	j_long v1 = currentOperandStack->popLong();
+	j_long v2 = currentOperandStack->popLong();
+	currentOperandStack->pushLong(v2 & v1);
+}
+inline void InstructionEngine::iorHandler(){
+	j_int v1 = currentOperandStack->popInt();
+	j_int v2 = currentOperandStack->popInt();
+	currentOperandStack->pushInt(v2 | v1);
+}
+inline void InstructionEngine::lorHandler(){
+	j_long v1 = currentOperandStack->popLong();
+	j_long v2 = currentOperandStack->popLong();
+	currentOperandStack->pushLong(v2 | v1);
+}
+inline void InstructionEngine::ixorHandler(){
+	j_int v1 = currentOperandStack->popInt();
+	j_int v2 = currentOperandStack->popInt();
+	currentOperandStack->pushInt(v2 ^ v1);
+}
+inline void InstructionEngine::lxorHandler(){
+	j_long v1 = currentOperandStack->popLong();
+	j_long v2 = currentOperandStack->popLong();
+	currentOperandStack->pushLong(v2 ^ v1);
+}
+inline void InstructionEngine::iincHandler(){
+	uint8_t index = currentCodeReader->readUint8();
+	int32_t constVal = static_cast<int32_t>(currentCodeReader->readInt8());
+	j_int val = currentLocalVars->getInt(index);
+	val += constVal;
+	currentLocalVars->setInt(index,val);
+}
+
+inline void InstructionEngine::i2lHandler(){
+	j_int val = currentOperandStack->popInt();
+	currentOperandStack->pushLong(static_cast<j_long>(val));
+}
+inline void InstructionEngine::i2fHandler(){
+	j_int val = currentOperandStack->popInt();
+	currentOperandStack->pushFloat(static_cast<j_float>(val));
+}
+inline void InstructionEngine::i2dHandler(){
+	j_int val = currentOperandStack->popInt();
+	currentOperandStack->pushDouble(static_cast<j_double>(val));
+}
+inline void InstructionEngine::l2iHandler(){
+	j_long val = currentOperandStack->popLong();
+	currentOperandStack->pushInt(static_cast<j_int>(val));
+}
+inline void InstructionEngine::l2fHandler(){
+	j_long val = currentOperandStack->popLong();
+	currentOperandStack->pushFloat(static_cast<j_float>(val));
+}
+inline void InstructionEngine::l2dHandler(){
+	j_long val = currentOperandStack->popLong();
+	currentOperandStack->pushDouble(static_cast<j_double>(val));
+}
+inline void InstructionEngine::f2iHandler(){
+	j_float val = currentOperandStack->popFloat();
+	currentOperandStack->pushInt(static_cast<j_int>(val));
+}
+inline void InstructionEngine::f2lHandler(){
+	j_float val = currentOperandStack->popFloat();
+	currentOperandStack->pushLong(static_cast<j_long>(val));
+}
+inline void InstructionEngine::f2dHandler(){
+	j_float val = currentOperandStack->popFloat();
+	currentOperandStack->pushDouble(static_cast<j_double>(val));
+}
+inline void InstructionEngine::d2iHandler(){
+	j_double val = currentOperandStack->popDouble();
+	currentOperandStack->pushInt(static_cast<j_int>(val));
+}
+inline void InstructionEngine::d2lHandler(){
+	j_double val = currentOperandStack->popDouble();
+	currentOperandStack->pushLong(static_cast<j_long>(val));
+}
+inline void InstructionEngine::d2fHandler(){
+	j_double val = currentOperandStack->popDouble();
+	currentOperandStack->pushFloat(static_cast<j_float>(val));
+}
+inline void InstructionEngine::i2bHandler(){
+	j_int val = currentOperandStack->popInt();
+	currentOperandStack->pushInt(static_cast<j_int>(static_cast<j_byte>(val)));
+}
+inline void InstructionEngine::i2cHandler(){
+	j_int val = currentOperandStack->popInt();
+	currentOperandStack->pushInt(static_cast<j_int>(static_cast<j_char>(val)));
+}
+inline void InstructionEngine::i2sHandler(){
+	j_int val = currentOperandStack->popInt();
+	currentOperandStack->pushInt(static_cast<j_int>(static_cast<j_short>(val)));
+}
+
+inline void InstructionEngine::lcmpHandler(){
+	j_long v1 = currentOperandStack->popLong();
+	j_long v2 = currentOperandStack->popLong();
+	j_int result = 0;
+	if(v2 > v1)
+		result = 1;
+	else if (v2 == v1)
+		result = 0;
+	else
+		result = -1;
+	currentOperandStack->pushInt(result);
+}
+inline void InstructionEngine::fcmplHandler(){
+	j_float v1 = currentOperandStack->popFloat();
+	j_float v2 = currentOperandStack->popFloat();
+	j_int result = 0;
+	if(v2 > v1)
+		result = 1;
+	else if (v2 == v1)
+		result = 0;
+	else if (v2 < v1)
+		result = -1;
+	if(isnan(v1) || isnan(v2))
+		result = -1;
+	currentOperandStack->pushInt(result);
+}
+inline void InstructionEngine::fcmpgHandler(){
+	j_float v1 = currentOperandStack->popFloat();
+	j_float v2 = currentOperandStack->popFloat();
+	j_int result = 0;
+	if(v2 > v1)
+		result = 1;
+	else if (v2 == v1)
+		result = 0;
+	else if (v2 < v1)
+		result = -1;
+	if(isnan(v1) || isnan(v2))
+		result = 1;
+	currentOperandStack->pushInt(result);
+}
+inline void InstructionEngine::dcmplHandler(){
+	j_double v1 = currentOperandStack->popDouble();
+	j_double v2 = currentOperandStack->popDouble();
+	j_int result = 0;
+	if(v2 > v1)
+		result = 1;
+	else if (v2 == v1)
+		result = 0;
+	else if (v2 < v1)
+		result = -1;
+	if(isnan(v1) || isnan(v2))
+		result = -1;
+	currentOperandStack->pushInt(result);
+}
+inline void InstructionEngine::dcmpgHandler(){
+	j_double v1 = currentOperandStack->popDouble();
+	j_double v2 = currentOperandStack->popDouble();
+	j_int result = 0;
+	if(v2 > v1)
+		result = 1;
+	else if (v2 == v1)
+		result = 0;
+	else if (v2 < v1)
+		result = -1;
+	if(isnan(v1) || isnan(v2))
+		result = 1;
+	currentOperandStack->pushInt(result);
+}
+inline void InstructionEngine::ifeqHandler(){
+	j_int offset = readOffset16();
+	j_int val = currentOperandStack->popInt();
+	if(val == 0)
+		branch(offset);
+}
+inline void InstructionEngine::ifneHandler(){
+	j_int offset = readOffset16();
+	j_int val = currentOperandStack->popInt();
+	if(val != 0)
+		branch(offset);
+}
+inline void InstructionEngine::ifltHandler(){
+	j_int offset = readOffset16();
+	j_int val = currentOperandStack->popInt();
+	if(val < 0)
+		branch(offset);
+}
+inline void InstructionEngine::ifgeHandler(){
+	j_int offset = readOffset16();
+	j_int val = currentOperandStack->popInt();
+	if(val >= 0)
+		branch(offset);
+}
+inline void InstructionEngine::ifgtHandler(){
+	j_int offset = readOffset16();
+	j_int val = currentOperandStack->popInt();
+	if(val > 0)
+		branch(offset);
+}
+inline void InstructionEngine::ifleHandler(){
+	j_int offset = readOffset16();
+	j_int val = currentOperandStack->popInt();
+	if(val <= 0)
+		branch(offset);
+}
+inline void InstructionEngine::ifIcmpeqHandler(){
+	j_int offset = readOffset16();
+	j_int v1 = currentOperandStack->popInt();
+	j_int v2 = currentOperandStack->popInt();
+	if(v2 == v1)
+		branch(offset);
+}
+inline void InstructionEngine::ifIcmpneHandler(){
+	j_int offset = readOffset16();
+	j_int v1 = currentOperandStack->popInt();
+	j_int v2 = currentOperandStack->popInt();
+	if(v2 != v1)
+		branch(offset);
+}
+inline void InstructionEngine::ifIcmpltHandler(){
+	j_int offset = readOffset16();
+	j_int v1 = currentOperandStack->popInt();
+	j_int v2 = currentOperandStack->popInt();
+	if(v2 < v1)
+		branch(offset);
+}
+inline void InstructionEngine::ifIcmpgeHandler(){
+	j_int offset = readOffset16();
+	j_int v1 = currentOperandStack->popInt();
+	j_int v2 = currentOperandStack->popInt();
+	if(v2 >= v1)
+		branch(offset);
+}
+inline void InstructionEngine::ifIcmpgtHandler(){
+	j_int offset = readOffset16();
+	j_int v1 = currentOperandStack->popInt();
+	j_int v2 = currentOperandStack->popInt();
+	if(v2 > v1)
+		branch(offset);
+}
+inline void InstructionEngine::ifIcmpleHandler(){
+	j_int offset = readOffset16();
+	j_int v1 = currentOperandStack->popInt();
+	j_int v2 = currentOperandStack->popInt();
+	if(v2 <= v1)
+		branch(offset);
+}
+inline void InstructionEngine::ifAcmpeqHandler(){
+	j_int offset = readOffset16();
+	ObjectPtr v1 = currentOperandStack->popRef();
+	ObjectPtr v2 = currentOperandStack->popRef();
+	if(v1 == v2)
+		branch(offset);
+}
+inline void InstructionEngine::ifAcmpneHandler(){
+	j_int offset = readOffset16();
+	ObjectPtr v1 = currentOperandStack->popRef();
+	ObjectPtr v2 = currentOperandStack->popRef();
+	if(v1 != v2)
+		branch(offset);
+}
+
+inline void InstructionEngine::gotoHandler(){
+	j_int offset = readOffset16();
+	branch(offset);
+}
+//TODO
+inline void InstructionEngine::jsrHandler(){}
+inline void InstructionEngine::retHandler(){}
+
+inline void InstructionEngine::tableswitchHandler(){
+	currentCodeReader->skipPadding();
+	int32_t defaultOffset = currentCodeReader->readInt32();
+	int32_t low = currentCodeReader->readInt32();
+	int32_t high = currentCodeReader->readInt32();
+	int32_t jumpOffsetsCount = high -low + 1;
+	shared_ptr<vector<int32_t> > jumpOffsets = currentCodeReader->readInt32s(jumpOffsetsCount);
+
+	j_int index = currentOperandStack->popInt();
+	j_int offset;
+	if (index >= low && index <= high)
+		offset = static_cast<j_int>((*jumpOffsets)[index - low]);
+	else
+		offset = static_cast<j_int>(defaultOffset);
+	branch(offset);
+}
+inline void InstructionEngine::lookupswitchHandler(){
+	currentCodeReader->skipPadding();
+	int32_t defaultOffset = currentCodeReader->readInt32();
+	int32_t npairs = currentCodeReader->readInt32();
+	shared_ptr<vector<int32_t> > matchOffsets = currentCodeReader->readInt32s(npairs * 2);
+
+	j_int key = currentOperandStack->popInt();
+	for(int32_t i=0; i < npairs*2; i+=2){
+		if((*matchOffsets)[i] == key){
+			j_int offset = (*matchOffsets)[i+1];
+			branch(offset);
+			return;
+		}
+	}
+
+	branch(defaultOffset);
+}
+inline void InstructionEngine::ireturnHandler(){}
+inline void InstructionEngine::lreturnHandler(){}
+inline void InstructionEngine::freturnHandler(){}
+inline void InstructionEngine::dreturnHandler(){}
+inline void InstructionEngine::areturnHandler(){}
+inline void InstructionEngine::returnHandler(){}
+
+inline void InstructionEngine::ifnullHandler(){
+	j_int offset = readOffset16();
+	ObjectPtr ref = currentOperandStack->popRef();
+	if(!ref){
+		branch(offset);
+	}
+}
+inline void InstructionEngine::ifnonnullHandler(){
+	j_int offset = readOffset16();
+	ObjectPtr ref = currentOperandStack->popRef();
+	if(!ref){
+		branch(offset);
+	}
+}
+
+
 

@@ -28,7 +28,7 @@ void OperandStack::pushInt(j_int val){
 }
 j_int OperandStack::popInt(){
 	if(size <= 0){
-		printf("OperandStack::popInt");
+		printf("OperandStack::popInt size=%u\n",size);
 		exit(-1);
 	}
 	return slots[--size].num;
@@ -127,4 +127,8 @@ void OperandStack::pushSlot(Slot slot){
 
 Slot OperandStack::popSlot(){
 	return slots[--size];
+}
+
+uint32_t OperandStack::getSize(){
+	return this->size;
 }

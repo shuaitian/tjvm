@@ -38,6 +38,8 @@ public:
 
 	void setRef(uint32_t index,ObjectPtr ref);
 	ObjectPtr getRef(uint32_t index);
+
+	void display();
 };
 
 #endif

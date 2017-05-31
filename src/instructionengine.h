@@ -22,12 +22,16 @@ private:
 	ByteCodeReaderPtr currentCodeReader;
 	LocalVarsPtr currentLocalVars;
 	OperandStackPtr currentOperandStack;
+	j_int pc;
 public:
 	void regist(u1 code,function<void()> handler);
 	void run(u1 code);
 	static InstructionEnginePtr build(FramePtr currentFrame,ByteCodeReaderPtr currentCodeReader);
 	void reset(FramePtr currentFrame,ByteCodeReaderPtr currentCodeReader);
 private:
+	void branch(j_int offset);
+	j_int readOffset16();
+
 	void nopHandler();
 	void aconstNullHandler();
 	void dconst0Handler();
@@ -121,8 +125,104 @@ private:
 
 	//math
 	
+	void iremHandler();
+	void lremHandler();
+	void fremHandler();
+	void dremHandler();
 
+	void iaddHandler();
+	void laddHandler();
+	void faddHandler();
+	void daddHandler();
 
+	void isubHandler();
+	void lsubHandler();
+	void fsubHandler();
+	void dsubHandler();
+
+	void imulHandler();
+	void lmulHandler();
+	void fmulHandler();
+	void dmulHandler();
+
+	void idivHandler();
+	void ldivHandler();
+	void fdivHandler();
+	void ddivHandler();
+
+	void inegHandler();
+	void lnegHandler();
+	void fnegHandler();
+	void dnegHandler();
+
+	void ishlHandler();
+	void lshlHandler();
+	void ishrHandler();
+	void lshrHandler();
+	void iushrHandler();
+	void lushrHandler();
+
+	void iandHandler();
+	void landHandler();
+	void iorHandler();
+	void lorHandler();
+	void ixorHandler();
+	void lxorHandler();
+	void iincHandler();
+
+	void i2lHandler();
+	void i2fHandler();
+	void i2dHandler();
+	void l2iHandler();
+	void l2fHandler();
+	void l2dHandler();
+	void f2iHandler();
+	void f2lHandler();
+	void f2dHandler();
+	void d2iHandler();
+	void d2lHandler();
+	void d2fHandler();
+	void i2bHandler();
+	void i2cHandler();
+	void i2sHandler();
+
+	//comparison
+	void lcmpHandler();
+	void fcmplHandler();
+	void fcmpgHandler();
+	void dcmplHandler();
+	void dcmpgHandler();
+	void ifeqHandler();
+	void ifneHandler();
+	void ifltHandler();
+	void ifgeHandler();
+	void ifgtHandler();
+	void ifleHandler();
+	void ifIcmpeqHandler();
+	void ifIcmpneHandler();
+	void ifIcmpltHandler();
+	void ifIcmpgeHandler();
+	void ifIcmpgtHandler();
+	void ifIcmpleHandler();
+	void ifAcmpeqHandler();
+	void ifAcmpneHandler();
+
+	//Control
+	void gotoHandler();
+	void jsrHandler();
+	void retHandler();
+	void tableswitchHandler();
+	void lookupswitchHandler();
+	void ireturnHandler();
+	void lreturnHandler();
+	void freturnHandler();
+	void dreturnHandler();
+	void areturnHandler();
+	void returnHandler();
+
+	//extended
+	void ifnullHandler();
+	void ifnonnullHandler();
 };
 
 #endif

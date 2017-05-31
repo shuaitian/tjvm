@@ -28,6 +28,7 @@ public:
 	ObjectPtr popRef();
 	void pushSlot(Slot slot);
 	Slot popSlot();
+	uint32_t getSize();
 	
 	static OperandStackPtr build(uint32_t maxStack);
 	~OperandStack();

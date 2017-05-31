@@ -157,8 +157,64 @@ const u1 ixor = 0x82;
 const u1 lxor = 0x83;
 const u1 iinc = 0x84;
 
+//conversion
+const u1 i2l = 0x85;
+const u1 i2f = 0x86;
+const u1 i2d = 0x87;
+const u1 l2i = 0x88;
+const u1 l2f = 0x89;
+const u1 l2d = 0x8a;
+const u1 f2i = 0x8b;
+const u1 f2l = 0x8c;
+const u1 f2d = 0x8d;
+const u1 d2i = 0x8e;
+const u1 d2l = 0x8f;
+const u1 d2f = 0x90;
+const u1 i2b = 0x91;
+const u1 i2c = 0x92;
+const u1 i2s = 0x93;
 
- 
+//comparison
+const u1 lcmp = 0x94;
+const u1 fcmpl = 0x95;
+const u1 fcmpg = 0x96;
+const u1 dcmpl = 0x97;
+const u1 dcmpg = 0x98;
+const u1 ifeq = 0x99;
+const u1 ifne = 0x9a;
+const u1 iflt = 0x9b;
+const u1 ifge = 0x9c;
+const u1 ifgt = 0x9d;
+const u1 ifle = 0x9e;
+const u1 if_icmpeq = 0x9f;
+const u1 if_icmpne = 0xa0;
+const u1 if_icmplt = 0xa1;
+const u1 if_icmpge = 0xa2;
+const u1 if_icmpgt = 0xa3;
+const u1 if_icmple = 0xa4;
+const u1 if_acmpeq = 0xa5;
+const u1 if_acmpne = 0xa6;
+
+const u1 goto_ = 0xa7;
+const u1 jsr = 0xa8;
+const u1 ret = 0xa9;
+const u1 tableswitch = 0xaa;
+const u1 lookupswitch = 0xab;
+const u1 ireturn = 0xac;
+const u1 lreturn = 0xad;
+const u1 freturn = 0xae;
+const u1 dreturn = 0xaf;
+const u1 areturn = 0xb0;
+const u1 return_ = 0xb1;
+
+//extended
+const u1 wide = 0xc4;
+const u1 multianewarray = 0xc5;
+const u1 ifnull = 0xc6;
+const u1 ifnonnull = 0xc7;
+const u1 goto_w = 0xc8;
+const u1 jsr_w = 0xc9;
+
 
 
 }// namespace tt
