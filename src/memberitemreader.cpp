@@ -86,7 +86,6 @@ AttrItemPtr MemberItemReader::readConstantValue(shared_ptr<ClassReader> classRea
 	shared_ptr<ConstantValueAttrItem> ret = make_shared<ConstantValueAttrItem>();
 	u2 constValueIndex = classReader->readU2();
 	ret->setConstValueIndex(constValueIndex);
-	printf("const value index:%u\n",constValueIndex);
     return static_pointer_cast<AttributeItem>(ret);
 }
 

@@ -1,10 +1,31 @@
 #include "constantpool.h"
+#include <string>
 #include "def.h"
 #include <stdio.h>
 
 void ConstantPool::add(shared_ptr<ConstantItem> item){
 //	printf("add constant item %d\n",item->getTag());
 	pool.push_back(item);
+}
+
+string_ref ConstantPool::readClassByIndex(u2 index){
+	if(index == 0){
+		//object没有父类，superClassindex为0
+		std::string *nullStr = new string("");
+		return string_ref(*nullStr);
+	}
+	shared_ptr<ConstantItem> item = readConstItemByOwnIndex(index);
+	if(!item){
+		printf("error ConstantPool::readClassByIndex(u2 index) illegal paramenter 'index'");
+		exit(0);
+	}
+	if(item->getTag() != CONSTANT_Class){
+		printf("error ConstantPool::readUTF8ByIndex(u2 index) item->getTag()!=CONSTANT_Class\n");
+		exit(0);
+	}
+	shared_ptr<ConstantClassItem> classItem = static_pointer_cast<ConstantClassItem>(item);
+	u2 nameIndex = classItem->getNameIndex();	
+	return readUTF8ByIndex(nameIndex);
 }
 
 string_ref ConstantPool::readUTF8ByIndex(u2 index){

@@ -18,11 +18,22 @@ shared_ptr<ClassEntity> ClassParser::parser(shared_ptr<ByteArray> byteArray){
 	classEntity->setMagic(classReader->readU4());		
 	classEntity->setMinorVersion(classReader->readU2());
 	classEntity->setMajorVersion(classReader->readU2());
-	classEntity->setConstantPool(readConstantPool(classReader));
+	ConstantPoolPtr constantPool = readConstantPool(classReader);
+	classEntity->setConstantPool(constantPool);
 	classEntity->setAccessFlags(classReader->readU2());
 	classEntity->setThisClass(classReader->readU2());
+	classEntity->setClassName(constantPool->readClassByIndex(classEntity->getThisClass()));
 	classEntity->setSuperClass(classReader->readU2());
-	classEntity->setInterfaces(readInterfaces(classReader));
+	classEntity->setSuperClassName(constantPool->readClassByIndex(classEntity->getSuperClass()));
+	shared_ptr<vector<u2> > interfaces = readInterfaces(classReader);
+	classEntity->setInterfaces(interfaces);
+	shared_ptr<vector<string> >interfaceNames = make_shared<vector<string> >();
+	vector<u2>::iterator iter;
+	for(iter = interfaces->begin();iter != interfaces->end(); ++iter){
+		u2 i = *iter;
+		interfaceNames->push_back(constantPool->readClassByIndex(i).data());
+	}
+	classEntity->setInterfaceNames(interfaceNames);
 	classEntity->setFieldMember(readFieldMember(classReader,classEntity->getConstantPool()));
 	classEntity->setMethodMember(readMethodMember(classReader,classEntity->getConstantPool()));
 	classEntity->setAttributes(MemberItemReader::instance()->readAttributes(classReader,classEntity->getConstantPool()));

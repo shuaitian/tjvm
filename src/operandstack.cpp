@@ -47,6 +47,7 @@ j_float OperandStack::popFloat(){
 		printf("OperandStack::popFloat");
 		exit(-1);
 	}
+	
 	j_float ret = 0;
 	void *dest = &ret;
 	void *src = &(slots[--size].num);

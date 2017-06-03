@@ -15,6 +15,7 @@
 #include "bytecodereader.h"
 #include "instructionengine.h"
 #include "interpreter.h"
+#include "class.h"
 
 using namespace std; 
 using namespace boost;
@@ -58,6 +59,8 @@ void testEngine(){
 	shared_ptr<ByteArray> classFile = classFileReader->readClassFile(config->get("mainClass"));
 	if(classFile){
 		ClassEntityPtr classEntity = ClassParser::instance()->parser(classFile);
+		Class::Pointer clazz = Class::build(classEntity);
+		//classEntity->getConstantPool()->display();
 		MemberItemPtr mainItem = classEntity->getMethodMember()->getMainMethod();
 		//classEntity->getConstantPool()->display();
 		if(mainItem){

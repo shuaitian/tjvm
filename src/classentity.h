@@ -7,7 +7,10 @@
 #include "methodmember.h"
 #include <vector>
 #include <boost/smart_ptr.hpp>
+#include <boost/utility/string_ref.hpp>
 using namespace std;
+class ClassEntity;
+typedef shared_ptr<ClassEntity> ClassEntityPtr;
 class ClassEntity{
 private:
 	u4 magic;
@@ -16,8 +19,11 @@ private:
 	shared_ptr<ConstantPool> constantPool;
 	u2 accessFlags;
 	u2 thisClass;
+	string_ref className;
 	u2 superClass;
+	string_ref superClassName;
 	shared_ptr<vector<u2> > interfaces;
+	shared_ptr<vector<string> >interfaceNames;
 	MemberPtr fieldMember;
 	MethodMemberPtr methodMember;
 	AttrVecPtr attributes;
@@ -55,6 +61,25 @@ public:
 	AttrVecPtr getAttributes(){
 		return this->attributes;
 	}
+	string_ref getClassName(){
+		return this->className;
+	}
+	string_ref getSuperClassName(){
+		return this->superClassName;
+	}
+	shared_ptr<vector<string> > getInterfaceNames(){
+		return this->interfaceNames;
+	}
+	void setInterfaceNames(shared_ptr<vector<string> > interfaceNames){
+		this->interfaceNames = interfaceNames;
+	}
+	void setSuperClassName(string_ref superClassName){
+		this->superClassName = superClassName;
+	}
+	void setClassName(string_ref className){
+		this->className = className;
+	}
+
 	void setMagic(u4 magic){
 		this->magic = magic;
 	}

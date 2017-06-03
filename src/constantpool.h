@@ -19,7 +19,7 @@ public:
 		return pool.size();
 	}
 	string_ref readUTF8ByIndex(u2 index);
-
+	string_ref readClassByIndex(u2 index);
 	void display();
 };
 
