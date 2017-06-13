@@ -60,7 +60,7 @@ void testEngine(){
 	if(classFile){
 		ClassEntityPtr classEntity = ClassParser::instance()->parser(classFile);
 		Class::Pointer clazz = Class::build(classEntity);
-		//classEntity->getConstantPool()->display();
+		classEntity->getConstantPool()->display();
 		MemberItemPtr mainItem = classEntity->getMethodMember()->getMainMethod();
 		//classEntity->getConstantPool()->display();
 		if(mainItem){

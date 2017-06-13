@@ -16,6 +16,11 @@ Class::Pointer Class::build(ClassEntityPtr entity){
 		printf("interfaceName:%s\n",interfaceName.c_str());
 	}
 	ret->constantPool = RtConstantPool::build(entity->getConstantPool());
+	//printf("#6 class: name:%s\n",ret->constantPool->getClassRef(6)->name.c_str());
+	//shared_ptr<FieldRef> fieldRef = ret->constantPool->getFieldRef(4);
+	//printf("#4 FieldRef: className:%s name:%s descriptor:%s\n",fieldRef->className.c_str(),fieldRef->name.c_str(),fieldRef->descriptor.c_str());
+	//shared_ptr<MethodRef> methodRef = ret->constantPool->getMethodRef(5);
+	//printf("#5 MethodRef: className:%s name:%s descriptor:%s\n",methodRef->className.c_str(),methodRef->name.c_str(),methodRef->descriptor.c_str());
 	ret->fields = Field::builds(entity->getFieldMember());
 	vector<Field::Pointer>::iterator fieldIter;
 	for(fieldIter=ret->fields->begin();fieldIter!=ret->fields->end();++fieldIter){
