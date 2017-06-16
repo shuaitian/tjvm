@@ -9,7 +9,7 @@
 #include "field.h"
 #include "method.h"
 #include "classloader.h"
-#include "localvars.h"
+#include "slot.h"
 #include "classentity.h"
 using namespace boost;
 using namespace std;
@@ -25,15 +25,34 @@ private:
 	RtConstantPool::Pointer constantPool;
 	shared_ptr<vector<Field::Pointer> > fields;
 	shared_ptr<vector<Method::Pointer> > methods;
+	ClassLoader::Pointer classLoader;
 	Pointer superClass;
 	shared_ptr<vector<Pointer> > interfaces;
 	uint32_t instanceSlotCount;
 	uint32_t staticSlotCount;
-	shared_ptr<Slot> slots;
+	shared_ptr<vector<Slot> > staticFields;
 	Class();
 public:
 	static Pointer build(ClassEntityPtr entity);
 	bool is(u2 flag);
+public:
+	void setClassLoader(ClassLoader::Pointer loader);
+	ClassLoader::Pointer getClassLoader();
+	string_ref getName();
+	string_ref getSuperClassName();
+	void setSuperClass(Pointer super);
+	Pointer getSuperClass();
+	shared_ptr<vector<string> > getInterfaceNames();
+	void setInterfaces(shared_ptr<vector<Pointer> > interfaces);
+	shared_ptr<vector<Pointer> > getInterfaces();
+	uint32_t getInstanceSlotCount();
+	uint32_t getStaticSlotCount();
+	void setInstanceSlotCount(uint32_t count);
+	void setStaticSlotCount(uint32_t count);
+	shared_ptr<vector<Field::Pointer> > getFields();
+	shared_ptr<vector<Method::Pointer> > getMethods();
+	void setStaticFields(shared_ptr<vector<Slot> > staticFields);
+	shared_ptr<vector<Slot> > getStaticFields();
 };
 
 #endif

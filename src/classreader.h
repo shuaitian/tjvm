@@ -17,6 +17,7 @@ public:
 	u2 readU2();
 	u4 readU4();
 	u8 readU8();
+	
 	vector<u2> readU2Table();
 	shared_ptr<ByteArray> readBytes(unsigned long length);
 	

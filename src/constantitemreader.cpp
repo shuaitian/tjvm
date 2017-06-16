@@ -54,8 +54,18 @@ shared_ptr<ConstantItem> ConstantItemReader::read(shared_ptr<ClassReader> classR
 	case CONSTANT_InterfaceMethodref:
 		ret = readInterfaceMethodRefItem(classReader);
 		break;
+	case CONSTANT_MethodHandle:
+		ret = readMethodHandleItem(classReader);
+		break;
+	case CONSTANT_MethodType:
+		ret = readMethodTypeItem(classReader);
+		break;
+	case CONSTANT_InvokeDynamic:
+		ret = readInvokeDynamicItem(classReader);
+		break;
 	default:
 		printf("unknow tag:%d\n",tag);
+		exit(0);
 		break;
 	}
 	ret->setTag(tag);
@@ -152,5 +162,26 @@ shared_ptr<ConstantFloatItem> ConstantItemReader::readFloatItem(shared_ptr<Class
 	shared_ptr<ConstantFloatItem> ret = make_shared<ConstantFloatItem>();
 	u4 val = classReader->readU4();
 	ret->setBytes(val);	
+	return ret;
+}
+
+shared_ptr<ConstantItem> ConstantItemReader::readMethodHandleItem(shared_ptr<ClassReader> classReader){
+	//just do nothing
+	shared_ptr<ConstantItem> ret = make_shared<ConstantItem>();
+	classReader->readU1();
+	classReader->readU2();
+	return ret;
+}
+shared_ptr<ConstantItem> ConstantItemReader::readMethodTypeItem(shared_ptr<ClassReader> classReader){
+	//just do nothing
+	shared_ptr<ConstantItem> ret = make_shared<ConstantItem>();
+	classReader->readU2();
+	return ret;
+}
+shared_ptr<ConstantItem> ConstantItemReader::readInvokeDynamicItem(shared_ptr<ClassReader> classReader){
+	//just do nothing
+	shared_ptr<ConstantItem> ret = make_shared<ConstantItem>();
+	classReader->readU2();
+	classReader->readU2();
 	return ret;
 }

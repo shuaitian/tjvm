@@ -17,3 +17,14 @@ shared_ptr<vector<Field::Pointer> > Field::builds(MemberPtr field){
 	}
 	return ret;
 }
+
+void Field::setSlotId(uint32_t slotId){
+	this->slotId = slotId;
+}
+uint32_t Field::getSlotId(){
+	return this->slotId;
+}
+
+bool Field::isDoubleOrLong(){
+	return descriptor=="J" || descriptor=="D";	
+}

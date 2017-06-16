@@ -194,6 +194,6 @@ void MemberItemReader::parseAttribute(shared_ptr<ClassReader> classReader,Consta
 	else{
 		u4 len = classReader->readU4();
 		classReader->readBytes(len);
-		printf("unknow attr name:%s\n",name.data());
+		//printf("unknow attr name:%s\n",name.data());
 	}
 }

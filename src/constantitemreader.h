@@ -21,6 +21,9 @@ private:
 	shared_ptr<ConstantFieldRefItem> readFieldRefItem(shared_ptr<ClassReader> classReader);
 	shared_ptr<ConstantMethodRefItem> readMethodRefItem(shared_ptr<ClassReader> classReader);
 	shared_ptr<ConstantInterfaceMethodRefItem> readInterfaceMethodRefItem(shared_ptr<ClassReader> classReader);
+	shared_ptr<ConstantItem> readMethodHandleItem(shared_ptr<ClassReader> classReader);
+	shared_ptr<ConstantItem> readMethodTypeItem(shared_ptr<ClassReader> classReader);
+	shared_ptr<ConstantItem> readInvokeDynamicItem(shared_ptr<ClassReader> classReader);
 public:
 	static shared_ptr<ConstantItemReader> instance();
 	shared_ptr<ConstantItem> read(shared_ptr<ClassReader> classReader);

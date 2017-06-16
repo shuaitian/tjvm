@@ -3,16 +3,17 @@
 #include <boost/smart_ptr.hpp>
 #include "def.h"
 #include "object.h"
+#include "slot.h"	
 using namespace boost;
 
 class LocalVars;
 typedef shared_ptr<LocalVars> LocalVarsPtr;
 
-struct Slot
-{
-	j_int num;
-	ObjectPtr ref;
-};
+//struct Slot
+//{
+//	j_int num;
+//	ObjectPtr ref;
+//};
 
 class LocalVars
 {

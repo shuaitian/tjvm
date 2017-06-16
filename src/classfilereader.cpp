@@ -21,8 +21,8 @@ ClassFileReader::ClassFileReader():
 	jre = config->get("jre");
 	classpath = config->get("classpath");
 
-	cout << "jre:" << jre << endl;
-	cout << "classpath:" << classpath << endl;
+//	cout << "jre:" << jre << endl;
+//	cout << "classpath:" << classpath << endl;
 }
 
 shared_ptr<ClassFileReader> ClassFileReader::instance(){

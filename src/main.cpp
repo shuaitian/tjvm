@@ -16,6 +16,7 @@
 #include "instructionengine.h"
 #include "interpreter.h"
 #include "class.h"
+#include "classloader.h"
 
 using namespace std; 
 using namespace boost;
@@ -25,6 +26,8 @@ const char* VERSION = "1.0.0";
 void printConfig();
 void start();
 void testEngine();
+void testClassLoader();
+void displayVectorString(shared_ptr<vector<string> > v);
 
 int main(int argc,char* argv[]){
 	//parse config from command line
@@ -50,7 +53,24 @@ int main(int argc,char* argv[]){
 
 	//start();
 	//testFrame();
-	testEngine();
+	//testEngine();
+	testClassLoader();
+}
+
+void testClassLoader(){
+	shared_ptr<Config> config = Config::instance();
+	ClassLoader::Pointer loader=  ClassLoader::build();
+	Class::Pointer clazz = loader->loadClass(config->get("mainClass"));
+	if(clazz){
+		//loader->mapedNames();
+		displayVectorString(loader->mapedNames());
+		printf("instantce count:%d\n",clazz->getInstanceSlotCount());
+		printf("static count:%d\n",clazz->getStaticSlotCount());
+	}
+
+	else{
+		printf("class not found\n");
+	}
 }
 
 void testEngine(){
@@ -79,4 +99,11 @@ void printConfig(){
 	cout << "class path :" << config->get("classpath") << endl;
 	cout << "jre home:" << config->get("Xjre") << endl;
 	cout << "main class:" << config->get("mainClass") << endl;
+}
+
+void displayVectorString(shared_ptr<vector<string> > v){
+	vector<string>::iterator iter;
+	for(iter=v->begin();iter!=v->end();++iter){
+		printf("%s\n",iter->c_str());
+	}
 }

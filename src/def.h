@@ -116,7 +116,7 @@ const u1 dup_x2 = 0x5b;
 const u1 dup2 = 0x5c;
 const u1 dup2_x1 = 0x5d;
 const u1 dup2_x2 = 0x5e;
-const u1 swap = 0x5f;
+const u1 swap_ = 0x5f; //for ambigious
 
 //math
 const u1 iadd = 0x60;

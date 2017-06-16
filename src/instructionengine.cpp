@@ -127,7 +127,7 @@ InstructionEngine::InstructionEngine(FramePtr curFrame,ByteCodeReaderPtr curCode
 	regist(tt::dup2,bind(&InstructionEngine::dup2Handler,this));
 	regist(dup2_x1,bind(&InstructionEngine::dup2X1Handler,this));
 	regist(dup2_x2,bind(&InstructionEngine::dup2X2Handler,this));
-	regist(tt::swap,bind(&InstructionEngine::swapHandler,this));
+	regist(tt::swap_,bind(&InstructionEngine::swapHandler,this));
 
 	//math
 	regist(tt::irem,bind(&InstructionEngine::iremHandler,this));

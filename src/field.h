@@ -10,8 +10,12 @@ public:
 	typedef shared_ptr<Field> Pointer;
 private:
 	Field(MemberItemPtr memberItem);
+	uint32_t slotId;
 public:
 	static shared_ptr<vector<Pointer> > builds(MemberPtr filed);
+	void setSlotId(uint32_t slotId);
+	uint32_t getSlotId();
+	bool isDoubleOrLong();
 };
 
 #endif
