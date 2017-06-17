@@ -53,6 +53,7 @@ public:
 	shared_ptr<vector<Method::Pointer> > getMethods();
 	void setStaticFields(shared_ptr<vector<Slot> > staticFields);
 	shared_ptr<vector<Slot> > getStaticFields();
+	RtConstantPool::Pointer getConstantPool();
 };
 
 #endif

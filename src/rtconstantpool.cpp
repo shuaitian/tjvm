@@ -34,3 +34,7 @@ shared_ptr<MethodRef> RtConstantPool::getMethodRef(u2 index){
 shared_ptr<InterfaceMethodRef> RtConstantPool::getInterfaceMethodRef(u2 index){
 	return pool->readInterfaceMethodRefByIndex(index);
 }
+
+string_ref RtConstantPool::getUTF8(u2 index){
+	return pool->readUTF8ByIndex(index);
+}

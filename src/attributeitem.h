@@ -56,6 +56,7 @@ public:
 		return this->constValueIndex;
 	}
 };
+typedef shared_ptr<ConstantValueAttrItem> ConstantValueAttrItemPtr;
 
 struct ExceptionTableEntry{
 	u2 startPC;

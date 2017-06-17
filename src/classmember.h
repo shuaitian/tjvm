@@ -15,6 +15,7 @@ protected:
 	string name;
 	string descriptor;
 	shared_ptr<Class> clazz;
+	MemberItemPtr memberItem;
 	ClassMember(MemberItemPtr memberItem);
 public:
 	string_ref getName();

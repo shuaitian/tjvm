@@ -1,4 +1,5 @@
 #include "field.h"
+#include "attributeitem.h"
 
 Field::Field(MemberItemPtr memberItem):
 	ClassMember(memberItem)
@@ -27,4 +28,21 @@ uint32_t Field::getSlotId(){
 
 bool Field::isDoubleOrLong(){
 	return descriptor=="J" || descriptor=="D";	
+}
+
+bool Field::hasConstValueIndex(){
+	ConstantValueAttrItemPtr attrItem = memberItem->getConstValueAttr();
+	if(attrItem)
+		return true;
+	else 
+		return false;
+}
+
+uint16_t Field::getConstValueIndex(){
+	ConstantValueAttrItemPtr attrItem = memberItem->getConstValueAttr();
+	if(!attrItem){
+		printf("ConstantValue does not exist in '%s'\n",name.c_str());
+		exit(0);
+	}
+	return attrItem->getConstValueIndex();
 }

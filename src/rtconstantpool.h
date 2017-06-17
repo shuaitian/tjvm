@@ -22,6 +22,7 @@ public:
 	shared_ptr<FieldRef> getFieldRef(u2 index);
 	shared_ptr<MethodRef> getMethodRef(u2 index);
 	shared_ptr<InterfaceMethodRef> getInterfaceMethodRef(u2 index);
+	string_ref getUTF8(u2 index);
 };
 
 #endif

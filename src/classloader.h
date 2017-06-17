@@ -9,6 +9,8 @@
 using namespace boost;
 using namespace std;
 class Class;
+class Field;
+class Slot;
 
 class ClassLoader
 {
@@ -32,6 +34,7 @@ private:
 	void calcInstanceFieldSlotIds(shared_ptr<Class> clazz);
 	void calcStaticFieldSlotIds(shared_ptr<Class> clazz);
 	void allocAndInitStaticVars(shared_ptr<Class> clazz);
+	void initStaticFinalField(shared_ptr<Class> clazz,shared_ptr<Field> field,shared_ptr<vector<Slot> > staticFields);
 	
 };
 

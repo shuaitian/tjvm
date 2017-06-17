@@ -22,9 +22,10 @@ private:
 	u2 attributes_count;
 	string_ref descriptor;
 	AttrVecPtr attributes;
+	
 public:
 	CodeAttrItemPtr getCodeAttribute();
-
+	ConstantValueAttrItemPtr getConstValueAttr();
 	void setDescriptor(string_ref descriptor){
 		this->descriptor = descriptor;
 	}

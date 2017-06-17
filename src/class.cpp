@@ -98,3 +98,7 @@ void Class::setStaticFields(shared_ptr<vector<Slot> > staticFields){
 shared_ptr<vector<Slot> > Class::getStaticFields(){
 	return this->staticFields;
 }
+
+RtConstantPool::Pointer Class::getConstantPool(){
+	return this->constantPool;
+}

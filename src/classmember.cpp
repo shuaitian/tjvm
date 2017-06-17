@@ -5,6 +5,7 @@ ClassMember::ClassMember(MemberItemPtr memberItem):
 	name(memberItem->getName().data()),
 	descriptor(memberItem->getDescriptor().data())
 {
+	this->memberItem = memberItem;
 }
 
 string_ref ClassMember::getName(){

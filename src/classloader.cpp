@@ -5,6 +5,7 @@
 #include "classparser.h"
 #include "field.h"
 #include "object.h"
+#include "rtconstantpool.h"
 #include <stdio.h>
 
 ClassLoader::Pointer ClassLoader::build(){
@@ -138,4 +139,41 @@ void ClassLoader::allocAndInitStaticVars(shared_ptr<Class> clazz){
 		staticFields->push_back(slot);
 	}
 
+	vector<Field::Pointer>::iterator iter;
+	for(iter=clazz->getFields()->begin();iter!=clazz->getFields()->end();++iter){
+		Field::Pointer field = *iter;
+		//if(field->is(ACC_STATIC) && field->is(ACC_FINAL)){
+		if(field->hasConstValueIndex()){
+			initStaticFinalField(clazz,field,staticFields);
+		}
+	}
+
+}
+
+void ClassLoader::initStaticFinalField(shared_ptr<Class> clazz,shared_ptr<Field> field,shared_ptr<vector<Slot> > staticFields){
+	uint16_t constValueIndex = field->getConstValueIndex();
+	string_ref descriptor = field->getDescriptor();
+	RtConstantPool::Pointer constantPool = clazz->getConstantPool();
+	uint32_t slotId = field->getSlotId();
+	if(descriptor == "Z" || descriptor == "B" || descriptor == "C" || descriptor == "S" || descriptor == "I"){
+		j_int val = constantPool->getInt(constValueIndex);
+		SlotUtil::setInt(staticFields,slotId,val);
+	}
+	else if(descriptor == "J"){
+		j_long val = constantPool->getLong(constValueIndex);
+		SlotUtil::setLong(staticFields,slotId,val);
+	}
+	else if(descriptor == "F"){
+		j_float val = constantPool->getFloat(constValueIndex);
+		SlotUtil::setFloat(staticFields,slotId,val);
+	}
+	else if(descriptor == "D"){
+		j_double val = constantPool->getDouble(constValueIndex);
+		SlotUtil::setDouble(staticFields,slotId,val);	
+	}
+	else if(descriptor == "Ljava/lang/String;"){
+		//string_ref str = constantPool->getUTF8(constValueIndex);
+		printf("TODO::string const value\n");
+
+	}
 }

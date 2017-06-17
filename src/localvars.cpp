@@ -80,7 +80,7 @@ void LocalVars::setLong(uint32_t index,j_long val){
 	}
 
 	slots[index].num = (int32_t)val;
-	slots[size+1].num = (int32_t)(val >> 32);
+	slots[index+1].num = (int32_t)(val >> 32);
 }
 j_long LocalVars::getLong(uint32_t index){
 	if(index < 1 || index >= size){

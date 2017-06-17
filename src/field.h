@@ -16,6 +16,8 @@ public:
 	void setSlotId(uint32_t slotId);
 	uint32_t getSlotId();
 	bool isDoubleOrLong();
+	bool hasConstValueIndex();
+	uint16_t getConstValueIndex();
 };
 
 #endif
