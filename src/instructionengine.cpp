@@ -4,6 +4,8 @@
 #include <boost/bind.hpp>
 #include <stdio.h>
 #include <math.h>
+#include "rtconstantpool.h"
+#include "class.h"
 
 
 
@@ -225,6 +227,9 @@ InstructionEngine::InstructionEngine(FramePtr curFrame,ByteCodeReaderPtr curCode
 	//regist(tt::dreturn,bind(&InstructionEngine::dreturnHandler,this));
 	//regist(tt::areturn,bind(&InstructionEngine::areturnHandler,this));
 	//regist(tt::return_,bind(&InstructionEngine::returnHandler,this));
+	
+	//references
+	regist(tt::new_,bind(&InstructionEngine::newHandler,this));
 
 	//extended
 	regist(tt::ifnull,bind(&InstructionEngine::ifnullHandler,this));
@@ -250,6 +255,23 @@ void InstructionEngine::reset(FramePtr currentFrame,ByteCodeReaderPtr currentCod
 	this->currentFrame = currentFrame;
 	this->currentCodeReader = currentCodeReader;
 }
+
+inline void InstructionEngine::newHandler(){
+	shared_ptr<Class> curClass = currentFrame->getMethod()->getClass();
+	shared_ptr<RtConstantPool> cp = curClass->getConstantPool();
+	uint16_t index = currentCodeReader->readUint16();
+	shared_ptr<ClassRef> classRef = cp->getClassRef(index);
+	shared_ptr<Class> targetClass = Resolver::resolveClassRef(classRef,curClass);
+	if(targetClass->is(ACC_INTERFACE) || targetClass->is(ACC_ABSTRACT)){
+		//TODO throw exception
+		printf("error InstantiationError\n");
+		exit(0);
+	}
+
+	shared_ptr<Object> ref = targetClass->newObject(targetClass);
+	currentOperandStack->pushRef(ref);
+}
+
 
 inline void InstructionEngine::nopHandler(){
 	//printf("brance instruciton\n");

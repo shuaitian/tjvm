@@ -3,17 +3,20 @@
 #include "threadprivate.h"
 #include "bytecodereader.h"
 #include "instructionengine.h"
+#include "method.h"
 #include <stdio.h>
+#include <vector>
 
 Interpreter::Interpreter():
 	threadPrivate(ThreadPrivate::build())
 {
 
 }
-void Interpreter::interpret(MemberItemPtr method){
-	CodeAttrItemPtr codeItem = method->getCodeAttribute();
-	FramePtr frame = Frame::build(codeItem->getMaxLocals(),codeItem->getMaxStack(),threadPrivate);
-	ByteCodeReaderPtr codeReader = ByteCodeReader::build(codeItem);
+void Interpreter::interpret(shared_ptr<Method> method){
+	shared_ptr<vector<u1> > code = method->getCode();	
+	FramePtr frame = Frame::build(method->getMaxLocals(),method->getMaxStack(),threadPrivate);
+	frame->setMethod(method);
+	ByteCodeReaderPtr codeReader = ByteCodeReader::build(code);
 
 	threadPrivate->pushFrame(frame);
 	InstructionEnginePtr engine = InstructionEngine::build(frame,codeReader);

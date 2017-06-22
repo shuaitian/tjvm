@@ -53,8 +53,8 @@ int main(int argc,char* argv[]){
 
 	//start();
 	//testFrame();
-	//testEngine();
-	testClassLoader();
+	testEngine();
+	//testClassLoader();
 }
 
 void testClassLoader(){
@@ -66,6 +66,8 @@ void testClassLoader(){
 		displayVectorString(loader->mapedNames());
 		printf("instantce count:%d\n",clazz->getInstanceSlotCount());
 		printf("static count:%d\n",clazz->getStaticSlotCount());
+		shared_ptr<RtConstantPool> cp = clazz->getConstantPool();
+
 	}
 
 	else{
@@ -75,18 +77,12 @@ void testClassLoader(){
 
 void testEngine(){
 	shared_ptr<Config> config = Config::instance();
-	shared_ptr<ClassFileReader> classFileReader = ClassFileReader::instance();
-	shared_ptr<ByteArray> classFile = classFileReader->readClassFile(config->get("mainClass"));
-	if(classFile){
-		ClassEntityPtr classEntity = ClassParser::instance()->parser(classFile);
-		Class::Pointer clazz = Class::build(classEntity);
-		classEntity->getConstantPool()->display();
-		MemberItemPtr mainItem = classEntity->getMethodMember()->getMainMethod();
-		//classEntity->getConstantPool()->display();
-		if(mainItem){
-			InterpreterPtr interpreter = Interpreter::build();
-			interpreter->interpret(mainItem);
-		}
+	shared_ptr<ClassLoader> classLoader = ClassLoader::build();
+	shared_ptr<Class> clazz = classLoader->loadClass(config->get("mainClass"));
+	if(clazz){
+		shared_ptr<Method> mainMethod = clazz->getMainMethod();
+		shared_ptr<Interpreter> interpreter = Interpreter::build();
+		interpreter->interpret(mainMethod);
 	}
 }
 

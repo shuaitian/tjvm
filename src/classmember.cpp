@@ -1,11 +1,12 @@
 #include "classmember.h"
 
-ClassMember::ClassMember(MemberItemPtr memberItem):
+ClassMember::ClassMember(MemberItemPtr memberItem,shared_ptr<Class> clazz):
 	accessFlags(memberItem->getAccessFlags()),
 	name(memberItem->getName().data()),
 	descriptor(memberItem->getDescriptor().data())
 {
 	this->memberItem = memberItem;
+	this->clazz = clazz;
 }
 
 string_ref ClassMember::getName(){

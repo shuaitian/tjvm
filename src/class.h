@@ -13,6 +13,8 @@
 #include "classentity.h"
 using namespace boost;
 using namespace std;
+class Object;
+
 class Class
 {
 public:
@@ -54,6 +56,10 @@ public:
 	void setStaticFields(shared_ptr<vector<Slot> > staticFields);
 	shared_ptr<vector<Slot> > getStaticFields();
 	RtConstantPool::Pointer getConstantPool();
+	bool isAccessibleTo(shared_ptr<Class> clazz);
+	shared_ptr<Field> lookupField(string_ref descriptor);
+	shared_ptr<Object> newObject(shared_ptr<Class> self);
+	shared_ptr<Method> getMainMethod();
 };
 
 #endif

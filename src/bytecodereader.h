@@ -1,8 +1,10 @@
 #ifndef _BYTECODEREADER_H_
 #define _BYTECODEREADER_H_
 #include <boost/smart_ptr.hpp>
+#include <vector>
 #include "attributeitem.h"
 #include "def.h"
+using namespace std;
 using namespace boost;
 class ByteCodeReader;
 typedef shared_ptr<ByteCodeReader> ByteCodeReaderPtr;
@@ -10,12 +12,11 @@ typedef shared_ptr<ByteCodeReader> ByteCodeReaderPtr;
 class ByteCodeReader
 {
 private:
-	shared_ptr<CodeAttrItem> codeAttrItem;
 	j_int pc;
-	ByteCodeReader(shared_ptr<CodeAttrItem> cai);
+	ByteCodeReader(shared_ptr<vector<u1> > code);
 	shared_ptr<vector<u1> > code;
 public:
-	static ByteCodeReaderPtr build(shared_ptr<CodeAttrItem> cai);
+	static ByteCodeReaderPtr build(shared_ptr<vector<u1> > code);
 	uint8_t readUint8();
 	int8_t readInt8();
 	uint16_t readUint16();

@@ -1,19 +1,19 @@
 #include "field.h"
 #include "attributeitem.h"
 
-Field::Field(MemberItemPtr memberItem):
-	ClassMember(memberItem)
+Field::Field(MemberItemPtr memberItem,shared_ptr<Class> clazz):
+	ClassMember(memberItem,clazz)
 {
 	
 }
 
-shared_ptr<vector<Field::Pointer> > Field::builds(MemberPtr field){
+shared_ptr<vector<Field::Pointer> > Field::builds(MemberPtr field,shared_ptr<Class> clazz){
 	shared_ptr<vector<Pointer> > ret = make_shared<vector<Pointer> >();
 	MemItemVecPtr vec = field->getMemberItems();
 	vector<MemberItemPtr>::iterator iter;
 	for(iter=vec->begin();iter!=vec->end();++iter){
 		MemberItemPtr item = *iter;
-		Field::Pointer p(new Field(item));
+		Field::Pointer p(new Field(item,clazz));
 		ret->push_back(p);
 	}
 	return ret;
@@ -45,4 +45,9 @@ uint16_t Field::getConstValueIndex(){
 		exit(0);
 	}
 	return attrItem->getConstValueIndex();
+}
+
+bool Field::isAccessibleTo(shared_ptr<Class> clazz){
+	//TODO 
+	return true;
 }

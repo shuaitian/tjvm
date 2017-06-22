@@ -23,3 +23,10 @@ void Frame::display(){
 shared_ptr<ThreadPrivate> Frame::getThreadPrivate(){
 	return this->threadPrivate;
 }
+
+void Frame::setMethod(shared_ptr<Method> method){
+	this->method = method;
+}
+shared_ptr<Method> Frame::getMethod(){
+	return this->method;
+}

@@ -195,6 +195,7 @@ const u1 if_icmple = 0xa4;
 const u1 if_acmpeq = 0xa5;
 const u1 if_acmpne = 0xa6;
 
+//control
 const u1 goto_ = 0xa7;
 const u1 jsr = 0xa8;
 const u1 ret = 0xa9;
@@ -206,6 +207,26 @@ const u1 freturn = 0xae;
 const u1 dreturn = 0xaf;
 const u1 areturn = 0xb0;
 const u1 return_ = 0xb1;
+
+//references
+const u1 getstatic = 0xb2;
+const u1 pubstatic = 0xb3;
+const u1 getfield = 0xb4;
+const u1 putfield = 0xb5;
+const u1 invokevirtual = 0xb6;
+const u1 invokespecial = 0xb7;
+const u1 invokestatic = 0xb8;
+const u1 invokeinterface = 0xb9;
+const u1 invokedynamic = 0xba;
+const u1 new_ = 0xbb;
+const u1 newarray = 0xbc;
+const u1 anewarray = 0xbd;
+const u1 arraylength = 0xbe;
+const u1 athrow = 0xbf;
+const u1 checkcast = 0xc0;
+const u1 instanceof = 0xc1;
+const u1 monitorenter = 0xc2;
+const u1 monitorexit = 0xc3;
 
 //extended
 const u1 wide = 0xc4;

@@ -1,11 +1,10 @@
 #include "bytecodereader.h"
 #include <string.h>
 
-ByteCodeReader::ByteCodeReader(shared_ptr<CodeAttrItem> cai):
-	codeAttrItem(cai),
+ByteCodeReader::ByteCodeReader(shared_ptr<vector<u1> > code):
 	pc(0)
 {
-	this->code = cai->getCode();	
+	this->code = code;
 }
 
 void ByteCodeReader::skipPadding(){
@@ -13,9 +12,9 @@ void ByteCodeReader::skipPadding(){
 		readUint8();
 }
 
-ByteCodeReaderPtr ByteCodeReader::build(shared_ptr<CodeAttrItem> cai)
+ByteCodeReaderPtr ByteCodeReader::build(shared_ptr<vector<u1> > code)
 {
-	ByteCodeReaderPtr ret(new ByteCodeReader(cai));
+	ByteCodeReaderPtr ret(new ByteCodeReader(code));
 	return ret;
 }
 uint8_t ByteCodeReader::readUint8(){

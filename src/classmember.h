@@ -16,7 +16,7 @@ protected:
 	string descriptor;
 	shared_ptr<Class> clazz;
 	MemberItemPtr memberItem;
-	ClassMember(MemberItemPtr memberItem);
+	ClassMember(MemberItemPtr memberItem,shared_ptr<Class> clazz);
 public:
 	string_ref getName();
 	string_ref getDescriptor();

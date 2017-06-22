@@ -6,6 +6,7 @@
 #include "memberitem.h"
 using namespace boost;
 class Interpreter;
+class Method;
 
 typedef shared_ptr<Interpreter> InterpreterPtr;
 class Interpreter
@@ -14,7 +15,7 @@ private:
 	Interpreter();
 	ThreadPrivatePtr threadPrivate;
 public:
-	void interpret(MemberItemPtr method);
+	void interpret(shared_ptr<Method> method);
 	static InterpreterPtr build();
 };
 

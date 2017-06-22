@@ -220,6 +220,9 @@ private:
 	void areturnHandler();
 	void returnHandler();
 
+	//references
+	void newHandler();
+
 	//extended
 	void ifnullHandler();
 	void ifnonnullHandler();

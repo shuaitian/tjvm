@@ -14,8 +14,10 @@ class Object
 private:
 	shared_ptr<Class> clazz;
 	shared_ptr<vector<Slot> > fields;
+	Object(shared_ptr<Class> clazz);
 public:
 	static ObjectPtr nullPtr();
+	static shared_ptr<Object> newObject(shared_ptr<Class> clazz);
 };
 
 #endif
