@@ -148,6 +148,8 @@ void ClassLoader::allocAndInitStaticVars(shared_ptr<Class> clazz){
 		}
 	}
 
+	clazz->setStaticFields(staticFields);
+
 }
 
 void ClassLoader::initStaticFinalField(shared_ptr<Class> clazz,shared_ptr<Field> field,shared_ptr<vector<Slot> > staticFields){

@@ -222,10 +222,14 @@ private:
 
 	//references
 	void newHandler();
+	void putStaticHandler();
+	void getStaticHandler();
 
 	//extended
 	void ifnullHandler();
 	void ifnonnullHandler();
+
+
 };
 
 #endif

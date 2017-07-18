@@ -83,7 +83,9 @@ void testEngine(){
 		shared_ptr<Method> mainMethod = clazz->getMainMethod();
 		shared_ptr<Interpreter> interpreter = Interpreter::build();
 		interpreter->interpret(mainMethod);
+		classLoader->mapedNames();
 	}
+
 }
 
 

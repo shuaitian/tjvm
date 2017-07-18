@@ -210,7 +210,7 @@ const u1 return_ = 0xb1;
 
 //references
 const u1 getstatic = 0xb2;
-const u1 pubstatic = 0xb3;
+const u1 putstatic = 0xb3;
 const u1 getfield = 0xb4;
 const u1 putfield = 0xb5;
 const u1 invokevirtual = 0xb6;
