@@ -67,7 +67,7 @@ shared_ptr<Class> RtConstantPool::resolveClass(shared_ptr<ClassRef> classRef){
 shared_ptr<Field> RtConstantPool::resolveField(shared_ptr<FieldRef> fieldRef){
 	shared_ptr<ClassLoader> loader = clazz->getClassLoader();
 	shared_ptr<Class> c = loader->loadClass(fieldRef->className);
-	shared_ptr<Field> field = c->lookupField(fieldRef->descriptor);
+	shared_ptr<Field> field = c->lookupField(fieldRef->name,fieldRef->descriptor);
 	if(!field){
 		//TODO throw exception
 		printf("error NoSuchFieldError[%s,%s]\n",fieldRef->className.c_str(),fieldRef->name.c_str());

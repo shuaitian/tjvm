@@ -15,7 +15,11 @@ shared_ptr<Class> Resolver::resolveClassRef(shared_ptr<ClassRef> classRef,shared
 shared_ptr<Field> Resolver::resolveFieldRef(shared_ptr<FieldRef> fieldRef,shared_ptr<Class> sourceClass){
 	shared_ptr<ClassLoader> loader = sourceClass->getClassLoader();
 	shared_ptr<Class> c = loader->loadClass(fieldRef->className);
-	shared_ptr<Field> field = c->lookupField(fieldRef->descriptor);
+
+	//printf("resolved class:%s\n",c->getName().data());
+	//printf("descriptor:%s\n",fieldRef->descriptor.data());
+	shared_ptr<Field> field = c->lookupField(fieldRef->name,fieldRef->descriptor);
+
 	if(!field){
 		//TODO throw exception
 		printf("error NoSuchFieldError[%s,%s]\n",fieldRef->className.c_str(),fieldRef->name.c_str());

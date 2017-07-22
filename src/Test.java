@@ -1,4 +1,5 @@
 class Test{
+	/*
 	private Object obj;
 	private Integer i;
 	private Double d;
@@ -12,11 +13,24 @@ class Test{
 	private static final float constFloat = 12.3456F;
 	private static final long constLong1 = Long.MAX_VALUE;
 	private static final String str = "Hello World";
+	*/
+	public static int staticVar;
+	public int field;
 	public static void main(String[] args){
-		float f1 = 10.0f;
-		float f2 = 5.0f;
-		Object o = new Object();
-		int result = (int)(f1 / f2);
-		System.out.println(result);
+		Test test = new Test();
+		test.field = 100;
+		int field ;
+		field = test.field;
+		int sum = 0;
+		for(int i=1; i <=100; i++){
+			sum+=i;
+		}
 	}
+	/*
+	static class Holder
+	{
+		public static int staticVar;
+		public double d = 10.0;
+	}
+	*/
 }

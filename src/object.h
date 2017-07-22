@@ -18,6 +18,8 @@ private:
 public:
 	static ObjectPtr nullPtr();
 	static shared_ptr<Object> newObject(shared_ptr<Class> clazz);
+
+	shared_ptr<vector<Slot> > getFields();
 };
 
 #endif

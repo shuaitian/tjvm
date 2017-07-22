@@ -224,6 +224,9 @@ private:
 	void newHandler();
 	void putStaticHandler();
 	void getStaticHandler();
+	void putFieldHandler();
+	void getFieldHandler();
+	void invokeSpecialHandler();
 
 	//extended
 	void ifnullHandler();

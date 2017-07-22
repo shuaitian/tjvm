@@ -232,6 +232,9 @@ InstructionEngine::InstructionEngine(FramePtr curFrame,ByteCodeReaderPtr curCode
 	regist(tt::new_,bind(&InstructionEngine::newHandler,this));
 	regist(tt::putstatic,bind(&InstructionEngine::putStaticHandler,this));
 	regist(tt::getstatic,bind(&InstructionEngine::getStaticHandler,this));
+	regist(tt::putfield,bind(&InstructionEngine::putFieldHandler,this));
+	regist(tt::getfield,bind(&InstructionEngine::getFieldHandler,this));
+	regist(tt::invokespecial,bind(&InstructionEngine::invokeSpecialHandler,this));
 
 	//extended
 	regist(tt::ifnull,bind(&InstructionEngine::ifnullHandler,this));
@@ -258,7 +261,159 @@ void InstructionEngine::reset(FramePtr currentFrame,ByteCodeReaderPtr currentCod
 	this->currentCodeReader = currentCodeReader;
 }
 
+void InstructionEngine::invokeSpecialHandler(){
+	//TODO invoke method bellow
+	currentCodeReader->readUint16();
+	currentOperandStack->popRef();
+}
+
+void InstructionEngine::putFieldHandler(){
+	printf("putField\n");
+	shared_ptr<Method> currentMethod = currentFrame->getMethod();
+	shared_ptr<Class> currentClass = currentMethod->getClass();
+	shared_ptr<RtConstantPool> cp = currentClass->getConstantPool();
+	shared_ptr<FieldRef> fieldRef = cp->getFieldRef(currentCodeReader->readUint16());
+	shared_ptr<Field> field = Resolver::resolveFieldRef(fieldRef,currentClass);
+	shared_ptr<Class> clazz = field->getClass();
+
+	if(field->is(ACC_STATIC)){
+		printf("java.lang.IncompatibleClassChangeError\n");
+		exit(0);
+	}
+
+	if(field->is(ACC_FINAL)){
+		if (currentClass!=clazz || currentMethod->getName() != "<init>")
+		{
+			printf("java.lang.IllegalAccessError\n");
+			exit(0);
+		}
+	}
+
+	string_ref descriptor = field->getDescriptor();
+	uint32_t slotId = field->getSlotId();
+
+	switch (descriptor[0])
+	{
+	case 'Z':
+	case 'B':
+	case 'C':
+	case 'S':
+	case 'I':
+	{
+		j_int val = currentOperandStack->popInt();
+		ObjectPtr ref = currentOperandStack->popRef();
+		if(!ref){
+			printf("java.lang.NullPointerException\n");
+			exit(0);
+		}
+		shared_ptr<vector<Slot> > slots = ref->getFields();
+		SlotUtil::setInt(slots,slotId,val);
+		break;
+	}
+	case 'F':
+	{
+		j_float val = currentOperandStack->popFloat();
+		ObjectPtr ref = currentOperandStack->popRef();
+		if(!ref){
+			printf("java.lang.NullPointerException\n");
+			exit(0);
+		}
+		shared_ptr<vector<Slot> > slots = ref->getFields();
+		SlotUtil::setFloat(slots,slotId,val);
+		break;
+	}
+	case 'J':
+	{
+		j_long val = currentOperandStack->popLong();
+		ObjectPtr ref = currentOperandStack->popRef();
+		if(!ref){
+			printf("java.lang.NullPointerException\n");
+			exit(0);
+		}
+		shared_ptr<vector<Slot> > slots = ref->getFields();
+		SlotUtil::setLong(slots,slotId,val);
+		break;
+	}
+	case 'D':
+	{
+		j_double val = currentOperandStack->popDouble();
+		ObjectPtr ref = currentOperandStack->popRef();
+		if(!ref){
+			printf("java.lang.NullPointerException\n");
+			exit(0);
+		}
+		shared_ptr<vector<Slot> > slots = ref->getFields();
+		SlotUtil::setDouble(slots,slotId,val);
+		break;
+	}
+	case 'L':
+	case '[':
+	{
+		ObjectPtr val = currentOperandStack->popRef();
+		ObjectPtr ref = currentOperandStack->popRef();
+		if(!ref){
+			printf("java.lang.NullPointerException\n");
+			exit(0);
+		}
+		shared_ptr<vector<Slot> > slots = ref->getFields();
+		SlotUtil::setRef(slots,slotId,val);
+		break;
+	}
+	}
+
+}
+void InstructionEngine::getFieldHandler(){
+	printf("getField\n");
+	shared_ptr<Method> currentMethod = currentFrame->getMethod();
+	shared_ptr<Class> currentClass = currentMethod->getClass();
+	shared_ptr<RtConstantPool> cp = currentClass->getConstantPool();
+	shared_ptr<FieldRef> fieldRef = cp->getFieldRef(currentCodeReader->readUint16());
+	shared_ptr<Field> field = Resolver::resolveFieldRef(fieldRef,currentClass);
+	shared_ptr<Class> clazz = field->getClass();
+
+	if(field->is(ACC_STATIC)){
+		printf("java.lang.IncompatibleClassChangeError\n");
+		exit(0);
+	}
+
+	ObjectPtr ref = currentOperandStack->popRef();
+	if(!ref){
+		printf("java.lang.NullPointerException\n");
+		exit(0);
+	}
+
+	string_ref descriptor = field->getDescriptor();
+	int slotId = field->getSlotId();
+	shared_ptr<vector<Slot> > slots = ref->getFields();
+
+	switch (descriptor[0])
+	{
+	case 'Z':
+	case 'B':
+	case 'C':
+	case 'S':
+	case 'I':
+		currentOperandStack->pushInt(SlotUtil::getInt(slots,slotId));
+		break;
+	case 'F':
+		currentOperandStack->pushFloat(SlotUtil::getFloat(slots,slotId));
+		break;
+	case 'J':
+		currentOperandStack->pushLong(SlotUtil::getLong(slots,slotId));
+		break;
+	case 'D':
+		currentOperandStack->pushDouble(SlotUtil::getDouble(slots,slotId));
+		break;
+	case 'L':
+	case '[':
+		currentOperandStack->pushRef(SlotUtil::getRef(slots,slotId));
+		break;
+	
+	}
+}
+
 inline void InstructionEngine::putStaticHandler(){
+	printf("putstatic\n");
 	shared_ptr<Method> method = currentFrame->getMethod();
 	shared_ptr<Class> currentClass = method->getClass();
 	shared_ptr<RtConstantPool> cp = currentClass->getConstantPool();
@@ -352,6 +507,7 @@ inline void InstructionEngine::getStaticHandler(){
 }
 
 inline void InstructionEngine::newHandler(){
+	printf("new\n");
 	shared_ptr<Class> curClass = currentFrame->getMethod()->getClass();
 	shared_ptr<RtConstantPool> cp = curClass->getConstantPool();
 	uint16_t index = currentCodeReader->readUint16();

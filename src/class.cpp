@@ -108,28 +108,29 @@ RtConstantPool::Pointer Class::getConstantPool(){
 
 bool Class::isAccessibleTo(shared_ptr<Class> clazz){
 	//TODO 还需要判断包名
-	return this->is(ACC_PUBLIC);
+	//return this->is(ACC_PUBLIC);
+	return true;
 }
 
-shared_ptr<Field> Class::lookupField(string_ref descriptor){
+shared_ptr<Field> Class::lookupField(string_ref name,string_ref descriptor){
 	vector<Field::Pointer>::iterator iter;
 	for(iter=fields->begin();iter!=fields->end();++iter){
 		Field::Pointer field = *iter;
-		if(descriptor == field->getDescriptor()){
+		if(name == field->getName() && descriptor == field->getDescriptor()){
 			return field;
 		}
 	}
 	shared_ptr<Field> ret;
 	vector<Pointer>::iterator iter2;
 	for(iter2=interfaces->begin();iter2!=interfaces->end();++iter2){
-		ret = (*iter2)->lookupField(descriptor);
+		ret = (*iter2)->lookupField(name,descriptor);
 		if(ret){
 			return ret;
 		}
 	}
 
 	if(this->getSuperClass()){
-		return this->getSuperClass()->lookupField(descriptor);
+		return this->getSuperClass()->lookupField(name,descriptor);
 	}
 
 	return ret;
